@@ -1,6 +1,6 @@
 // Helper functions for authentication
 
-const API = window.location.origin;
+const API = 'http://localhost:3003';
 
 // Lưu token và user info
 function setAuthToken(token, user) {

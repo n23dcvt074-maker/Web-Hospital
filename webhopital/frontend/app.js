@@ -1,5 +1,5 @@
 if (typeof API === 'undefined') {
-  window.API = window.location.origin;
+  window.API = 'http://localhost:3003';
 }
 
 // Dữ liệu bác sĩ mặc định (demo)
