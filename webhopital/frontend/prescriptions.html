@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kê đơn thuốc - WebHopital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --primary-light: #e3f2fd;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --info: #26a69a;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg: #f5f7fa;
+            --border: #e8eaed;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .prescriptions-section {
+            margin-top: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group label {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .prescriptions-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .prescription-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .prescription-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--info));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .prescription-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .prescription-card:hover::before {
+            opacity: 1;
+        }
+
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .prescription-patient h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .prescription-patient p {
+            margin: 0.3rem 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .prescription-patient i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .prescription-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .medications-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .medications-list h4 {
+            margin: 0 0 1rem 0;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .medication-item {
+            background: linear-gradient(135deg, var(--primary-light) 0%, #e8f1ff 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .medication-item h5 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .medication-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+
+        .medication-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .medication-detail label {
+            color: var(--text-light);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .medication-detail value {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .prescription-notes {
+            background: linear-gradient(135deg, var(--primary-light) 0%, #e8f1ff 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .prescription-notes h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .prescription-notes p {
+            margin: 0;
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .prescription-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: var(--primary);
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--bg);
+            border-radius: 0 0 16px 16px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .add-medication-btn {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #c8e6c9 0%, #81c784 100%);
+            color: #1b5e20;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .add-medication-btn:hover {
+            background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
+        }
+
+        .medications-form {
+            background: var(--bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            .prescription-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .prescription-actions {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                justify-content: center;
+            }
+
+            .modal-content {
+                margin: 20% auto;
+                width: 95%;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital"></i>
+                <span>WebHopital</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Trang chủ</a>
+                <a href="doctors.html" class="nav-link">Bác sĩ</a>
+                <a href="about.html" class="nav-link">Giới thiệu</a>
+                <div class="nav-auth">
+                    <button class="btn-login" id="userMenuBtn">
+                        <i class="fas fa-user-circle"></i> Tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-pills"></i> Kê đơn thuốc</h1>
+            <p>Quản lý đơn thuốc cho bệnh nhân</p>
+        </div>
+
+        <div class="prescriptions-section">
+            <div class="section-header">
+                <h2>Danh sách đơn thuốc</h2>
+                <button class="btn-primary" id="addPrescriptionBtn">
+                    <i class="fas fa-plus"></i> Kê đơn mới
+                </button>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Tìm kiếm bệnh nhân:</label>
+                    <input type="text" id="search-input" placeholder="Tên, email...">
+                </div>
+                <div class="filter-group">
+                    <label>Trạng thái:</label>
+                    <select id="status-filter">
+                        <option value="all">Tất cả</option>
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="active">Đang sử dụng</option>
+                        <option value="completed">Đã hoàn thành</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="prescriptions-list" class="prescriptions-list">
+                <!-- Prescriptions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Prescription Modal -->
+    <div id="prescription-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Kê đơn thuốc mới</h3>
+                <span class="modal-close" id="modalCloseBtn">&times;</span>
+            </div>
+            <form id="prescription-form" class="modal-body">
+                <div class="form-group">
+                    <label for="patient-select">Chọn bệnh nhân *</label>
+                    <select id="patient-select" name="patient_id" required>
+                        <option value="">-- Chọn bệnh nhân --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="medication">Tên thuốc *</label>
+                    <input type="text" id="medication" name="medication" required>
+                </div>
+                <div class="form-group">
+                    <label for="dosage">Liều lượng *</label>
+                    <input type="text" id="dosage" name="dosage" placeholder="e.g., 500mg" required>
+                </div>
+                <div class="form-group">
+                    <label for="frequency">Tần suất sử dụng *</label>
+                    <input type="text" id="frequency" name="frequency" placeholder="e.g., 3 lần/ngày" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Thời gian sử dụng *</label>
+                    <input type="text" id="duration" name="duration" placeholder="e.g., 7 ngày" required>
+                </div>
+                <div class="form-group">
+                    <label for="instructions">Hướng dẫn sử dụng</label>
+                    <textarea id="instructions" name="instructions" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="warning">Chống chỉ định / Cảnh báo</label>
+                    <textarea id="warning" name="warning" rows="3"></textarea>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="modalCancelBtn">Hủy</button>
+                <button type="button" class="btn-primary" id="modalSaveBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userBtn = document.getElementById('userMenuBtn'); if (userBtn) userBtn.addEventListener('click', showUserMenu);
+            const addBtn = document.getElementById('addPrescriptionBtn'); if (addBtn) addBtn.addEventListener('click', showAddPrescriptionModal);
+            document.getElementById('search-input').addEventListener('keyup', filterPrescriptions);
+            document.getElementById('status-filter').addEventListener('change', filterPrescriptions);
+            const modalClose = document.getElementById('modalCloseBtn'); if (modalClose) modalClose.addEventListener('click', closeModal);
+            const modalCancel = document.getElementById('modalCancelBtn'); if (modalCancel) modalCancel.addEventListener('click', closeModal);
+            const modalSave = document.getElementById('modalSaveBtn'); if (modalSave) modalSave.addEventListener('click', savePrescription);
+        });
+    </script>
+    <script>
+        let prescriptions = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbarAuth();
+            loadPrescriptions();
+        });
+
+        async function loadPrescriptions() {
+            try {
+                const user = getUser();
+                if (!user || user.role !== 'doctor') {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Load prescriptions (tạm thời trống)
+                displayPrescriptions([]);
+            } catch (error) {
+                console.error('Error loading prescriptions:', error);
+                showError('Lỗi kết nối mạng');
+            }
+        }
+
+        function displayPrescriptions(prescriptionsList) {
+            const container = document.getElementById('prescriptions-list');
+            container.innerHTML = '';
+
+            if (prescriptionsList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-pills"></i>
+                        <h3>Chưa có đơn thuốc</h3>
+                        <p>Hãy kê đơn thuốc đầu tiên</p>
+                    </div>
+                `;
+                return;
+            }
+
+            prescriptionsList.forEach(prescription => {
+                const card = document.createElement('div');
+                card.className = 'prescription-card';
+                card.innerHTML = `
+                    <div class="prescription-header">
+                        <h4>${prescription.patient_name}</h4>
+                        <span class="status-${prescription.status}">${prescription.status}</span>
+                    </div>
+                    <div class="prescription-content">
+                        <div><strong>Thuốc:</strong> ${prescription.medication}</div>
+                        <div><strong>Liều lượng:</strong> ${prescription.dosage}</div>
+                        <div><strong>Tần suất:</strong> ${prescription.frequency}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterPrescriptions() {
+            // Implement filter logic
+        }
+
+        function showAddPrescriptionModal() {
+            document.getElementById('prescription-form').reset();
+            document.getElementById('prescription-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('prescription-modal').style.display = 'none';
+        }
+
+        function savePrescription() {
+            showSuccess('Đơn thuốc đã được lưu');
+            closeModal();
+            loadPrescriptions();
+        }
+
+        function showError(message) {
+            alert('Lỗi: ' + message);
+        }
+
+        function showSuccess(message) {
+            alert('Thành công: ' + message);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('prescription-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+    <style>
+        .prescriptions-section {
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .prescriptions-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .prescription-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #0066cc;
+        }
+
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .prescription-header h4 {
+            margin: 0;
+            color: #333;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #f57c00;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #e0f2f1;
+            color: #00695c;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .prescription-content {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .prescription-content div {
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .modal-close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+    </style>
+</body>
+</html>

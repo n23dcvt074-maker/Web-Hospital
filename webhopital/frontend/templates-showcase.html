@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💎 Bộ Template HTML + CSS + JS Đẹp - Hướng Dẫn Sử Dụng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .template-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .template-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .template-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .template-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .template-body {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .template-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .template-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .template-features li {
+            padding: 0.5rem 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .template-features li:before {
+            content: '✓';
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .template-footer {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-code {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-code:hover {
+            background: #efefef;
+        }
+
+        .features-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .features-section h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .feature-item i {
+            color: #667eea;
+            font-size: 1.3rem;
+            min-width: 30px;
+            margin-top: 0.2rem;
+        }
+
+        .feature-item h3 {
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .demo-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-section h2 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .demo-item {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .demo-item h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            line-height: 1.4;
+        }
+
+        .footer {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .btn-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-large:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>💎 Bộ Template HTML + CSS + JS Đẹp</h1>
+            <p>3 template chuyên nghiệp được thiết kế tỉ mỉ cho các dự án web hiện đại</p>
+        </div>
+
+        <!-- Templates Grid -->
+        <div class="templates-grid">
+            <!-- Template 1: Landing Page -->
+            <div class="template-card">
+                <div class="template-header">
+                    <div class="template-icon"><i class="fas fa-home"></i></div>
+                    <div class="template-name">Landing Page</div>
+                </div>
+                <div class="template-body">
+                    <p class="template-description">Trang landing hoàn chỉnh dành cho các bệnh viện, công ty khám chữa bệnh</p>
+                    <ul class="template-features">
+                        <li>Hero section hấp dẫn</li>
+                        <li>Section dịch vụ tuyệt đẹp</li>
+                        <li>Danh sách bác sĩ/nhân viên</li>
+                        <li>Phần thống kê chuyên nghiệp</li>
+                        <li>Form liên hệ tương tác</li>
+                        <li>Footer hoàn thiện</li>
+                    </ul>
+                    <div class="template-footer">
+                        <a href="template-landing.html" class="btn btn-view">
+                            <i class="fas fa-eye"></i> Xem Live
+                        </a>
+                        <button class="btn btn-code template-code-btn" data-template="landing">
+                            <i class="fas fa-code"></i> Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template 2: Dashboard -->
+            <div class="template-card">
+                <div class="template-header">
+                    <div class="template-icon"><i class="fas fa-chart-bar"></i></div>
+                    <div class="template-name">Admin Dashboard</div>
+                </div>
+                <div class="template-body">
+                    <p class="template-description">Dashboard admin chuyên nghiệp cho hệ thống quản lý</p>
+                    <ul class="template-features">
+                        <li>Sidebar navigation tinh gọn</li>
+                        <li>Thẻ thống kê trực quan</li>
+                        <li>Bảng dữ liệu responsive</li>
+                        <li>Activity feed đẹp mắt</li>
+                        <li>Menu người dùng thả xuống</li>
+                        <li>Responsive & mobile-ready</li>
+                    </ul>
+                    <div class="template-footer">
+                        <a href="template-dashboard.html" class="btn btn-view">
+                            <i class="fas fa-eye"></i> Xem Live
+                        </a>
+                        <button class="btn btn-code template-code-btn" data-template="dashboard">
+                            <i class="fas fa-code"></i> Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template 3: Portfolio -->
+            <div class="template-card">
+                <div class="template-header">
+                    <div class="template-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="template-name">Portfolio Pro</div>
+                </div>
+                <div class="template-body">
+                    <p class="template-description">Website portfolio chuyên nghiệp để giới thiệu dự án và dịch vụ</p>
+                    <ul class="template-features">
+                        <li>Portfolio grid đẹp mắt</li>
+                        <li>Section features chi tiết</li>
+                        <li>Pricing cards chuyên nghiệp</li>
+                        <li>CTA section hấp dẫn</li>
+                        <li>Smooth animations</li>
+                        <li>SEO-friendly structure</li>
+                    </ul>
+                    <div class="template-footer">
+                        <a href="template-portfolio.html" class="btn btn-view">
+                            <i class="fas fa-eye"></i> Xem Live
+                        </a>
+                        <button class="btn btn-code template-code-btn" data-template="portfolio">
+                            <i class="fas fa-code"></i> Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2><i class="fas fa-star"></i> Tính Năng Chính</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div>
+                        <h3>Responsive Design</h3>
+                        <p>Hoạt động hoàn hảo trên mọi thiết bị</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-paint-brush"></i>
+                    <div>
+                        <h3>Modern UI/UX</h3>
+                        <p>Thiết kế hiện đại và với trải nghiệm người dùng tuyệt vời</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-code"></i>
+                    <div>
+                        <h3>Clean Code</h3>
+                        <p>Code sạch, có cấu trúc, dễ bảo trì</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-lightning"></i>
+                    <div>
+                        <h3>High Performance</h3>
+                        <p>Tối ưu tốc độ loding và hiệu suất</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-animation"></i>
+                    <div>
+                        <h3>Smooth Animations</h3>
+                        <p>Animationsção mượt mà và chuyên nghiệp</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-palette"></i>
+                    <div>
+                        <h3>Customizable Colors</h3>
+                        <p>Dễ dàng thay đổi màu sắc và brand</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Section -->
+        <div class="demo-section">
+            <h2><i class="fas fa-play-circle"></i> Hướng Dẫn Sử Dụng</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3><i class="fas fa-step-forward"></i> Bước 1: Chọn Template</h3>
+                    <p>Nhấp vào nút "Xem Live" hoặc "Code" để xem chi tiết template bạn muốn sử dụng</p>
+                </div>
+                <div class="demo-item">
+                    <h3><i class="fas fa-step-forward"></i> Bước 2: Copy Code</h3>
+                    <p>Copy toàn bộ HTML, CSS, JS từ template vào project của bạn</p>
+                </div>
+                <div class="demo-item">
+                    <h3><i class="fas fa-step-forward"></i> Bước 3: Tùy Chỉnh</h3>
+                    <p>Thay đổi màu sắc, text, hình ảnh để phù hợp với brand của bạn</p>
+                </div>
+                <div class="demo-item">
+                    <h3><i class="fas fa-step-forward"></i> Bước 4: Triển Khai</h3>
+                    <p>Cộng tác không gặp lỗi, websiet của bạn đã sẵn sàng hoạt động!</p>
+                </div>
+            </div>
+
+            <h3 style="color: #667eea; margin-top: 3rem; margin-bottom: 1rem;">Ví Dụ Custom CSS Variables:</h3>
+            <div class="code-block">:root {
+    --primary-color: #0066cc;
+    --secondary-color: #004499;
+    --accent-color: #ff6b6b;
+    --primary: #6366f1;
+    --secondary: #4f46e5;
+    --accent: #ec4899;
+}
+
+/* Chỉ cần thay đổi giá trị màu ở đây để thay đổi toàn bộ giao diện */
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h3>🚀 Sẵn Sàng Bắt Đầu?</h3>
+            <p>Tất cả các template đã sẵn sàng để sử dụng. Chọn template yêu thích và tùy chỉnh nó theo nhu cầu của bạn!</p>
+            <a href="index.html" class="btn-large">
+                <i class="fas fa-home"></i> Quay Về Trang Chủ
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function showCode(template) {
+            const templateFiles = {
+                'landing': 'template-landing.html',
+                'dashboard': 'template-dashboard.html',
+                'portfolio': 'template-portfolio.html'
+            };
+            
+            const file = templateFiles[template];
+            alert(`Bạn có thể xem source code bằng cách:\n\n1. Nhấn F12 hoặc Chuột phải > Inspect\n2. Hoặc tải file: ${file}`);
+        }
+
+        // Add event listeners to code buttons
+        document.querySelectorAll('.template-code-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                showCode(this.getAttribute('data-template'));
+            });
+        });
+
+        // Add smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

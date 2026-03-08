@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đội ngũ bác sĩ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .search-section {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 2rem 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .search-filters {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .search-input,
+    .search-select {
+      padding: 0.75rem 1rem;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .search-input:focus,
+    .search-select:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    .search-btn {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+    }
+
+    .doctor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .doctor-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+
+    .doctor-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .doctor-avatar {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, #0066cc, #004499);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+    }
+
+    .doctor-card h3 {
+      margin: 0 0 0.5rem 0;
+      color: #333;
+      font-size: 1.2rem;
+    }
+
+    .doctor-card p {
+      margin: 0.5rem 0;
+      color: #666;
+    }
+
+    .doctor-card .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .doctor-card .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .search-filters {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .doctor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <i class="fas fa-hospital"></i>
+        <span>BV Quân Dân Y Miền Đông</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Trang chủ</a>
+        <a href="doctors.html" class="nav-link active">Bác sĩ</a>
+        <a href="booking.html" class="nav-link">Đặt lịch</a>
+        <a href="about.html" class="nav-link">Giới thiệu</a>
+        <a href="login.html" class="nav-link">Đăng nhập</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Đội ngũ bác sĩ chuyên gia</h1>
+      <p>Các bác sĩ giàu kinh nghiệm, chuyên môn cao sẵn sàng phục vụ bạn</p>
+    </div>
+  </section>
+
+  <!-- Search Section -->
+  <section class="search-section">
+    <div class="container">
+      <div class="search-filters">
+        <div class="filter-group">
+          <input type="text" id="searchName" placeholder="Tìm theo tên bác sĩ..." class="search-input">
+        </div>
+        <div class="filter-group">
+          <select id="searchSpecialty" class="search-select">
+            <option value="">Tất cả chuyên khoa</option>
+            <option value="Tim mạch">Tim mạch</option>
+            <option value="Tai mũi họng">Tai mũi họng</option>
+            <option value="Nội tổng quát">Nội tổng quát</option>
+            <option value="Phụ khoa">Phụ khoa</option>
+            <option value="Nhi khoa">Nhi khoa</option>
+            <option value="Chỉnh hình">Chỉnh hình</option>
+            <option value="Hóa học lâm sàng">Hóa học lâm sàng</option>
+            <option value="Mắt">Mắt</option>
+            <option value="Ngoại khoa">Ngoại khoa</option>
+            <option value="Da liễu">Da liễu</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <select id="searchExperience" class="search-select">
+            <option value="">Tất cả kinh nghiệm</option>
+            <option value="0-5">0-5 năm</option>
+            <option value="5-10">5-10 năm</option>
+            <option value="10-20">10-20 năm</option>
+            <option value="20+">20+ năm</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <button id="searchBtn" class="search-btn">
+            <i class="fas fa-search"></i> Tìm kiếm
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div id="doctorList" class="doctor-grid"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-column footer-info">
+        <h3>Thông tin liên lạc</h3>
+        <p><strong>Bệnh viện Quân Dân Y Miền Đông</strong></p>
+        <p class="footer-address">Địa chỉ trụ sở chính: 50 Lê Văn Việt, TP Thủ Đức, TP.HCM</p>
+        <p><i class="fas fa-phone"></i> <strong>Cấp cứu:</strong> (028) 7777 7777 - 0332 363 655</p>
+        <p><i class="fas fa-phone"></i> <strong>Hotline:</strong> 082 884 5959</p>
+        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> info@bvquandany.com</p>
+      </div>
+      
+      <div class="footer-column footer-nav">
+        <div class="footer-nav-col">
+          <h4>Trang chủ</h4>
+          <ul>
+            <li><a href="index.html">Chuyên khoa</a></li>
+            <li><a href="booking.html">Dịch vụ</a></li>
+            <li><a href="#">Liên hệ</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Giới thiệu</h4>
+          <ul>
+            <li><a href="#">Dành cho đối tác</a></li>
+            <li><a href="#">Tin tức & Sự kiện</a></li>
+            <li><a href="#">Tuyển dụng</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 by BV Quân Dân Y Miền Đông. <a href="#" style="color: #0052a3; text-decoration: none;">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // Cập nhật navbar khi trang load
+    document.addEventListener('DOMContentLoaded', updateNavbarAuth);
+  </script>
+  <script>
+    let allDoctors = [];
+
+    // Load doctors from API
+    async function loadDoctors() {
+      try {
+        const response = await fetch(window.location.origin + '/doctors');
+        const data = await response.json();
+        
+        if (data && Array.isArray(data)) {
+          allDoctors = data;
+          displayDoctors(allDoctors);
+        } else {
+          // Fallback to demo data
+          allDoctors = [
+            { id: 1, name: 'BS Nguyễn Văn A', specialty: 'Tim mạch', experience_years: 15 },
+            { id: 2, name: 'BS Trần Thị B', specialty: 'Tai mũi họng', experience_years: 12 },
+            { id: 3, name: 'BS Lê Văn C', specialty: 'Nội tổng quát', experience_years: 8 },
+            { id: 4, name: 'BS Phạm Thị D', specialty: 'Phụ khoa', experience_years: 10 },
+            { id: 5, name: 'BS Đỗ Văn E', specialty: 'Nhi khoa', experience_years: 6 },
+            { id: 6, name: 'BS Vũ Thị F', specialty: 'Chỉnh hình', experience_years: 20 },
+            { id: 7, name: 'BS Hoàng Văn G', specialty: 'Hóa học lâm sàng', experience_years: 14 },
+            { id: 8, name: 'BS Đặng Thị H', specialty: 'Mắt', experience_years: 9 },
+            { id: 9, name: 'BS Bùi Văn I', specialty: 'Ngoại khoa', experience_years: 18 },
+            { id: 10, name: 'BS Trương Thị K', specialty: 'Da liễu', experience_years: 7 }
+          ];
+          displayDoctors(allDoctors);
+        }
+      } catch (error) {
+        console.error('Error loading doctors:', error);
+        // Fallback to demo data
+        allDoctors = [
+          { id: 1, name: 'BS Nguyễn Văn A', specialty: 'Tim mạch', experience_years: 15 },
+          { id: 2, name: 'BS Trần Thị B', specialty: 'Tai mũi họng', experience_years: 12 },
+          { id: 3, name: 'BS Lê Văn C', specialty: 'Nội tổng quát', experience_years: 8 },
+          { id: 4, name: 'BS Phạm Thị D', specialty: 'Phụ khoa', experience_years: 10 },
+          { id: 5, name: 'BS Đỗ Văn E', specialty: 'Nhi khoa', experience_years: 6 },
+          { id: 6, name: 'BS Vũ Thị F', specialty: 'Chỉnh hình', experience_years: 20 },
+          { id: 7, name: 'BS Hoàng Văn G', specialty: 'Hóa học lâm sàng', experience_years: 14 },
+          { id: 8, name: 'BS Đặng Thị H', specialty: 'Mắt', experience_years: 9 },
+          { id: 9, name: 'BS Bùi Văn I', specialty: 'Ngoại khoa', experience_years: 18 },
+          { id: 10, name: 'BS Trương Thị K', specialty: 'Da liễu', experience_years: 7 }
+        ];
+        displayDoctors(allDoctors);
+      }
+    }
+
+    function displayDoctors(doctors) {
+      const container = document.getElementById('doctorList');
+      container.innerHTML = '';
+
+      if (doctors.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1rem;">Không tìm thấy bác sĩ nào phù hợp.</p>';
+        return;
+      }
+
+      doctors.forEach(doctor => {
+        const card = document.createElement('div');
+        card.className = 'doctor-card';
+        card.innerHTML = `
+          <div style="padding: 1.5rem; text-align: center;">
+            <div class="doctor-avatar">
+              <i class="fas fa-user-md"></i>
+            </div>
+            <h3>${doctor.name}</h3>
+            <p style="color: #0066cc; font-weight: 600;">${doctor.specialty}</p>
+            <p style="color: #666; font-size: 0.9rem;"><i class="fas fa-star"></i> ${doctor.experience_years || 0} năm kinh nghiệm</p>
+            <a href="doctor-detail.html?id=${doctor.id}" class="btn">
+              <i class="fas fa-eye"></i> Xem chi tiết
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterDoctors() {
+      const nameFilter = document.getElementById('searchName').value.toLowerCase();
+      const specialtyFilter = document.getElementById('searchSpecialty').value;
+      const experienceFilter = document.getElementById('searchExperience').value;
+
+      const filtered = allDoctors.filter(doctor => {
+        const nameMatch = doctor.name.toLowerCase().includes(nameFilter);
+        const specialtyMatch = !specialtyFilter || doctor.specialty === specialtyFilter;
+        
+        let experienceMatch = true;
+        if (experienceFilter) {
+          const exp = doctor.experience_years || 0;
+          switch (experienceFilter) {
+            case '0-5': experienceMatch = exp >= 0 && exp <= 5; break;
+            case '5-10': experienceMatch = exp > 5 && exp <= 10; break;
+            case '10-20': experienceMatch = exp > 10 && exp <= 20; break;
+            case '20+': experienceMatch = exp > 20; break;
+          }
+        }
+
+        return nameMatch && specialtyMatch && experienceMatch;
+      });
+
+      displayDoctors(filtered);
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      loadDoctors();
+      
+      document.getElementById('searchBtn').addEventListener('click', filterDoctors);
+      document.getElementById('searchName').addEventListener('input', filterDoctors);
+      document.getElementById('searchSpecialty').addEventListener('change', filterDoctors);
+      document.getElementById('searchExperience').addEventListener('change', filterDoctors);
+    });
+  </script>
+  <script src="app.js"></script>
+  <script src="chatbot.js"></script>
+</body>
+</html>

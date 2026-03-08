@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Bệnh Viện Quân Dân Y Miền Đông</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #004499;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #f8f9fa;
+            --border-color: #ecf0f1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem 0;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-logo {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .sidebar-logo i {
+            font-size: 1.8rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(0, 0, 0, 0.2);
+            border-left-color: #ff6b6b;
+            color: white;
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: var(--text-dark);
+            font-size: 1.8rem;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            min-width: 200px;
+            z-index: 100;
+        }
+
+        .user-dropdown-menu.active {
+            display: block;
+        }
+
+        .user-dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .user-dropdown-menu a:hover {
+            background: var(--bg-light);
+            color: var(--primary-color);
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card-title {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-card-icon.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .stat-card-icon.success {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+        }
+
+        .stat-card-icon.warning {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+        }
+
+        .stat-card-icon.danger {
+            background: linear-gradient(135deg, var(--danger-color), #c0392b);
+        }
+
+        .stat-card-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-change {
+            font-size: 0.85rem;
+        }
+
+        .stat-card-change.up {
+            color: var(--success-color);
+        }
+
+        .stat-card-change.down {
+            color: var(--danger-color);
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Table */
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background: var(--bg-light);
+            padding: 1rem;
+            text-align: left;
+            color: var(--text-dark);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table tr:hover {
+            background: var(--bg-light);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge.pending {
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+
+        .badge.confirmed {
+            background: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+
+        .badge.completed {
+            background: rgba(0, 102, 204, 0.2);
+            color: var(--primary-color);
+        }
+
+        .badge.cancelled {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--primary-color);
+        }
+
+        .activity-content h4 {
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                padding: 1rem 0;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            table th, table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .sidebar-menu a {
+                padding: 0.75rem 1rem;
+            }
+
+            .sidebar-logo {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .sidebar-logo span {
+                display: none;
+            }
+
+            .sidebar-menu span {
+                display: none;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <i class="fas fa-hospital"></i>
+            <span>BV Quân Dân Y</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            <li><a href="#"><i class="fas fa-users"></i> <span>Bệnh Nhân</span></a></li>
+            <li><a href="#"><i class="fas fa-user-md"></i> <span>Bác Sĩ</span></a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> <span>Lịch Hẹn</span></a></li>
+            <li><a href="#"><i class="fas fa-briefcase-medical"></i> <span>Dịch Vụ</span></a></li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i> <span>Báo Cáo</span></a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> <span>Cài Đặt</span></a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1>Dashboard</h1>
+                <p style="color: var(--text-light); margin-top: 0.25rem;">Chào mừng trở lại Admin!</p>
+            </div>
+            <div class="header-user">
+                <div class="user-dropdown">
+                    <div class="user-avatar" id="userAvatar">AD</div>
+                    <div class="user-dropdown-menu" id="dropdownMenu">
+                        <a href="#">Hồ sơ</a>
+                        <a href="#">Cài đặt</a>
+                        <a href="login.html">Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">Tổng Bệnh Nhân</div>
+                    <div class="stat-card-icon primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">1,250</div>
+                <div class="stat-card-change up"><i class="fas fa-arrow-up"></i> 12% từ tháng trước</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">Lịch Hẹn Hôm Nay</div>
+                    <div class="stat-card-icon success">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">24</div>
+                <div class="stat-card-change up"><i class="fas fa-arrow-up"></i> 5 lịch mới</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">Doanh Thu Tháng</div>
+                    <div class="stat-card-icon warning">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">250M</div>
+                <div class="stat-card-change up"><i class="fas fa-arrow-up"></i> 8% tăng trưởng</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-card-title">Bác Sĩ Hoạt Động</div>
+                    <div class="stat-card-icon danger">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                </div>
+                <div class="stat-card-value">15</div>
+                <div class="stat-card-change down"><i class="fas fa-arrow-down"></i> 1 nghỉ phép</div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Recent Appointments -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-calendar-alt"></i> Lịch Hẹn Gần Đây
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bệnh Nhân</th>
+                            <th>Bác Sĩ</th>
+                            <th>Thời Gian</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nguyễn Văn A</td>
+                            <td>BS Trần Thị B</td>
+                            <td>09:00 - 09:30</td>
+                            <td><span class="badge confirmed">Xác Nhận</span></td>
+                        </tr>
+                        <tr>
+                            <td>Trần Thị C</td>
+                            <td>BS Lê Văn D</td>
+                            <td>10:00 - 10:30</td>
+                            <td><span class="badge pending">Chờ Xác Nhận</span></td>
+                        </tr>
+                        <tr>
+                            <td>Phạm Văn E</td>
+                            <td>BS Nguyễn Thị F</td>
+                            <td>14:00 - 14:30</td>
+                            <td><span class="badge completed">Hoàn Thành</span></td>
+                        </tr>
+                        <tr>
+                            <td>Đỗ Thị G</td>
+                            <td>BS Vũ Văn H</td>
+                            <td>15:00 - 15:30</td>
+                            <td><span class="badge confirmed">Xác Nhận</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-primary btn-sm" style="margin-top: 1rem;">
+                    <i class="fas fa-eye"></i> Xem Tất Cả
+                </button>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-history"></i> Hoạt Động Gần Đây
+                </div>
+                <ul class="activity-feed">
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Bệnh nhân mới</h4>
+                            <p>Nguyễn Văn A đã đăng ký</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.25rem;">5 phút trước</p>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Lịch hẹn hoàn thành</h4>
+                            <p>BS Trần Thị B hoàn thành khám</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.25rem;">30 phút trước</p>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Báo cáo được tạo</h4>
+                            <p>Báo cáo tháng 3 đã được tạo</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.25rem;">2 giờ trước</p>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Thay đổi hồ sơ</h4>
+                            <p>Hồ sơ bệnh nhân được cập nhật</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.25rem;">5 giờ trước</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Avatar click handler
+        document.getElementById('userAvatar').addEventListener('click', toggleDropdown);
+
+        function toggleDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.user-dropdown');
+            const menu = document.getElementById('dropdownMenu');
+            if (!dropdown.contains(event.target) && menu.classList.contains('active')) {
+                menu.classList.remove('active');
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>

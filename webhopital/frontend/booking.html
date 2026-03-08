@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt lịch khám</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <i class="fas fa-hospital"></i>
+        <span>BV Quân Dân Y Miền Đông</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Trang chủ</a>
+        <a href="doctors.html" class="nav-link">Bác sĩ</a>
+        <a href="booking.html" class="nav-link active">Đặt lịch</a>
+        <a href="about.html" class="nav-link">Giới thiệu</a>
+        <a href="login.html" class="nav-link">Đăng nhập</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Đặt lịch khám bệnh</h1>
+      <p>Hãy chọn bác sĩ và thời gian phù hợp với bạn</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="booking-wrapper">
+      <div class="booking-form">
+        <div class="card">
+          <h2><i class="fas fa-calendar-check"></i> Thông tin đặt lịch</h2>
+          
+          <div class="form-group">
+            <label for="name"><i class="fas fa-user"></i> Họ tên</label>
+            <input id="name" type="text" placeholder="Nhập họ tên của bạn" required>
+          </div>
+
+          <div class="form-group">
+            <label for="phone"><i class="fas fa-phone"></i> Số điện thoại</label>
+            <input id="phone" type="tel" placeholder="Nhập số điện thoại" required>
+          </div>
+
+          <div class="form-group">
+            <label for="doctor"><i class="fas fa-user-md"></i> Chọn bác sĩ</label>
+            <select id="doctor" required>
+              <option value="">-- Vui lòng chọn bác sĩ --</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="date"><i class="fas fa-calendar"></i> Ngày khám</label>
+              <input id="date" type="date" required>
+            </div>
+            <div class="form-group">
+              <label for="time"><i class="fas fa-clock"></i> Giờ khám</label>
+              <input id="time" type="time" required>
+            </div>
+          </div>
+
+          <button id="bookBtn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            <i class="fas fa-check"></i> Xác nhận đặt lịch
+          </button>
+        </div>
+      </div>
+
+      <div class="booking-info">
+        <div class="info-card">
+          <h3><i class="fas fa-info-circle"></i> Lưu ý quan trọng</h3>
+          <ul>
+            <li>Vui lòng đến sớm 15 phút trước giờ khám</li>
+            <li>Mang theo CMND/CCCD và thẻ BHYT nếu có</li>
+            <li>Chúng tôi sẽ gửi xác nhận qua số điện thoại</li>
+            <li>Hủy lịch tối thiểu 2 giờ trước khám</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h3><i class="fas fa-headset"></i> Hỗ trợ khách hàng</h3>
+          <p><strong>Điện thoại:</strong> (028) 7777 7777</p>
+          <p><strong>Email:</strong> info@bvquandany.com</p>
+          <p><strong>Giờ làm việc:</strong> 24/7</p>
+          <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+            <em>Nếu có bất kỳ câu hỏi, vui lòng liên hệ ngay với chúng tôi!</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-column footer-info">
+        <h3>Thông tin liên lạc</h3>
+        <p><strong>Bệnh viện Quân Dân Y Miền Đông</strong></p>
+        <p class="footer-address">Địa chỉ trụ sở chính: 50 Lê Văn Việt, TP Thủ Đức, TP.HCM</p>
+        <p><i class="fas fa-phone"></i> <strong>Cấp cứu:</strong> (028) 7777 7777 - 0332 363 655</p>
+        <p><i class="fas fa-phone"></i> <strong>Hotline:</strong> 082 884 5959</p>
+        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> info@bvquandany.com</p>
+      </div>
+      
+      <div class="footer-column footer-nav">
+        <div class="footer-nav-col">
+          <h4>Trang chủ</h4>
+          <ul>
+            <li><a href="index.html">Chuyên khoa</a></li>
+            <li><a href="booking.html">Dịch vụ</a></li>
+            <li><a href="#">Liên hệ</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Giới thiệu</h4>
+          <ul>
+            <li><a href="#">Dành cho đối tác</a></li>
+            <li><a href="#">Tin tức & Sự kiện</a></li>
+            <li><a href="#">Tuyển dụng</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 by BV Quân Dân Y Miền Đông. <a href="#" style="color: #0052a3; text-decoration: none;">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // Cập nhật navbar khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateNavbarAuth();
+      const b = document.getElementById('bookBtn');
+      if (b) b.addEventListener('click', book);
+    });
+  </script>
+  <script src="app.js"></script>
+  <script src="chatbot.js"></script>
+</body>
+</html>

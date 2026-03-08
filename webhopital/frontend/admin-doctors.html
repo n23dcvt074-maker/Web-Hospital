@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý bác sĩ - WebHopital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --primary-light: #e3f2fd;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --info: #26a69a;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg: #f5f7fa;
+            --border: #e8eaed;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .admin-section {
+            margin-top: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group label {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .doctors-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .doctors-table thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .doctors-table th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .doctors-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .doctors-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .doctors-table tbody tr:hover {
+            background: var(--primary-light);
+        }
+
+        .doctors-table td {
+            padding: 1.2rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .doctor-name {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 600;
+        }
+
+        .doctor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .specialty-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #c8e6c9 0%, #81c784 100%);
+            color: #1b5e20;
+        }
+
+        .experience-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
+            color: #f57c00;
+        }
+
+        .available-badge {
+            font-weight: 600;
+        }
+
+        .available-yes {
+            color: var(--success);
+        }
+
+        .available-no {
+            color: var(--danger);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: var(--primary);
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--bg);
+            border-radius: 0 0 16px 16px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group input,
+            .filter-group select {
+                min-width: 100%;
+            }
+
+            .doctors-table,
+            .doctors-table th,
+            .doctors-table td {
+                font-size: 0.85rem;
+            }
+
+            .doctors-table th,
+            .doctors-table td {
+                padding: 0.8rem 0.6rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                justify-content: center;
+            }
+
+            .modal-content {
+                margin: 20% auto;
+                width: 95%;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital"></i>
+                <span>WebHopital</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Trang chủ</a>
+                <a href="doctors.html" class="nav-link">Bác sĩ</a>
+                <a href="about.html" class="nav-link">Giới thiệu</a>
+                <div class="nav-auth">
+                    <button class="btn-login" id="userMenuBtn">
+                        <i class="fas fa-user-circle"></i> Tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-user-md"></i> Quản lý bác sĩ</h1>
+            <p>Quản lý thông tin và hoạt động của các bác sĩ</p>
+        </div>
+
+        <div class="admin-section">
+            <div class="section-header">
+                <h2>Danh sách bác sĩ</h2>
+                <button class="btn-primary" id="addDoctorBtn">
+                    <i class="fas fa-plus"></i> Thêm bác sĩ
+                </button>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Tìm kiếm:</label>
+                    <input type="text" id="search-input" placeholder="Tên, email...">
+                </div>
+                <div class="filter-group">
+                    <label>Chuyên khoa:</label>
+                    <select id="specialty-filter">
+                        <option value="all">Tất cả</option>
+                        <option value="1">Tim mạch</option>
+                        <option value="2">Tai mũi họng</option>
+                        <option value="3">Nội tổng quát</option>
+                        <option value="4">Phụ khoa</option>
+                        <option value="5">Nhi khoa</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="doctors-table-container" class="table-container">
+                <table class="doctors-table admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Chuyên khoa</th>
+                            <th>Kinh nghiệm</th>
+                            <th>Khả dụng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doctors-table-body">
+                        <!-- Doctors will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Doctor Modal -->
+    <div id="doctor-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Thêm bác sĩ mới</h3>
+                <span class="modal-close" id="modalCloseBtn">&times;</span>
+            </div>
+            <form id="doctor-form" class="modal-body">
+                <div class="form-group">
+                    <label for="doctor-name">Họ tên *</label>
+                    <input type="text" id="doctor-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="doctor-email">Email *</label>
+                    <input type="email" id="doctor-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="doctor-password">Mật khẩu *</label>
+                    <input type="password" id="doctor-password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="doctor-phone">Số điện thoại</label>
+                    <input type="tel" id="doctor-phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="specialty-select">Chuyên khoa *</label>
+                    <select id="specialty-select" name="specialty_id" required>
+                        <option value="">-- Chọn chuyên khoa --</option>
+                        <option value="1">Tim mạch</option>
+                        <option value="2">Tai mũi họng</option>
+                        <option value="3">Nội tổng quát</option>
+                        <option value="4">Phụ khoa</option>
+                        <option value="5">Nhi khoa</option>
+                        <option value="6">Chỉnh hình</option>
+                        <option value="7">Hóa học lâm sàng</option>
+                        <option value="8">Mắt</option>
+                        <option value="9">Ngoại khoa</option>
+                        <option value="10">Da liễu</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="license-number">Số giấy phép khám chữa bệnh *</label>
+                    <input type="text" id="license-number" name="license_number" required>
+                </div>
+                <div class="form-group">
+                    <label for="experience">Năm kinh nghiệm *</label>
+                    <input type="number" id="experience" name="experience_years" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="education">Học vấn</label>
+                    <input type="text" id="education" name="education" placeholder="e.g., Đại học Y Hà Nội">
+                </div>
+                <div class="form-group">
+                    <label for="consultation-fee">Phí khám (VNĐ)</label>
+                    <input type="number" id="consultation-fee" name="consultation_fee" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="bio">Tiểu sử</label>
+                    <textarea id="bio" name="bio" rows="3"></textarea>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="modalCancelBtn">Hủy</button>
+                <button type="button" class="btn-primary" id="modalSaveBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userBtn = document.getElementById('userMenuBtn'); if (userBtn) userBtn.addEventListener('click', showUserMenu);
+            const addBtn = document.getElementById('addDoctorBtn'); if (addBtn) addBtn.addEventListener('click', openAddDoctorModal);
+            const modalClose = document.getElementById('modalCloseBtn'); if (modalClose) modalClose.addEventListener('click', closeModal);
+            const modalCancel = document.getElementById('modalCancelBtn'); if (modalCancel) modalCancel.addEventListener('click', closeModal);
+            const modalSave = document.getElementById('modalSaveBtn'); if (modalSave) modalSave.addEventListener('click', saveDoctor);
+            // delegation for edit/delete
+            document.getElementById('doctors-table-container').addEventListener('click', function(e) {
+                const ed = e.target.closest('.btn-edit');
+                const dl = e.target.closest('.btn-delete');
+                if (ed) {
+                    e.stopPropagation();
+                    const id = ed.dataset.id;
+                    if (id) editDoctor(id);
+                }
+                if (dl) {
+                    e.stopPropagation();
+                    const id = dl.dataset.id;
+                    if (id) deleteDoctor(id);
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userBtn = document.getElementById('userMenuBtn'); if (userBtn) userBtn.addEventListener('click', showUserMenu);
+            const addBtn = document.getElementById('addDoctorBtn'); if (addBtn) addBtn.addEventListener('click', showAddDoctorModal);
+            const search = document.getElementById('search-input'); if (search) search.addEventListener('keyup', filterDoctors);
+            const spec = document.getElementById('specialty-filter'); if (spec) spec.addEventListener('change', filterDoctors);
+        });
+    </script>
+    <script>
+        let doctors = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbarAuth();
+            loadSpecialties();
+            loadDoctors();
+        });
+
+        async function loadDoctors() {
+            try {
+                const user = getUser();
+                if (!user || user.role !== 'admin') {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`${window.location.origin}/api/admin/doctors`, {
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    doctors = result.doctors;
+                    displayDoctors(doctors);
+                } else {
+                    showError(result.message);
+                    displayDoctors([]);
+                }
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+                showError('Lỗi kết nối mạng');
+                displayDoctors([]);
+            }
+        }
+
+        function displayDoctors(doctorsList) {
+            const tbody = document.getElementById('doctors-table-body');
+            tbody.innerHTML = '';
+
+            if (doctorsList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-user-md"></i>
+                            <p>Chưa có bác sĩ nào</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            doctorsList.forEach(doctor => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${doctor.id}</td>
+                    <td>${doctor.name}</td>
+                    <td>${doctor.email}</td>
+                    <td>${doctor.specialty_name || 'Chưa xác định'}</td>
+                    <td>${doctor.experience_years || 0} năm</td>
+                    <td><span class="badge badge-${doctor.is_available ? 'success' : 'danger'}">${doctor.is_available ? 'Còn' : 'Bận'}</span></td>
+                    <td class="actions">
+                        <button class="btn-edit" data-id="${doctor.id}"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" data-id="${doctor.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterDoctors() {
+            // Implement filter logic
+        }
+
+        function showAddDoctorModal() {
+            document.getElementById('modal-title').textContent = 'Thêm bác sĩ mới';
+            document.getElementById('doctor-form').reset();
+            document.getElementById('doctor-password').required = true;
+            document.getElementById('doctor-modal').style.display = 'block';
+        }
+
+        function editDoctor(doctorId) {
+            const doctor = doctors.find(d => d.id == doctorId);
+            if (doctor) {
+                openEditDoctorModal(doctor);
+            } else {
+                showError('Không tìm thấy thông tin bác sĩ');
+            }
+        }
+
+        async function loadSpecialties() {
+            try {
+                const response = await fetch(`${window.location.origin}/specialties`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const select = document.getElementById('specialty-select');
+                    select.innerHTML = '<option value="">-- Chọn chuyên khoa --</option>';
+                    
+                    result.specialties.forEach(specialty => {
+                        const option = document.createElement('option');
+                        option.value = specialty.id;
+                        option.textContent = specialty.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading specialties:', error);
+            }
+        }
+
+        function openAddDoctorModal() {
+            editingDoctorId = null;
+            document.getElementById('modal-title').textContent = 'Thêm bác sĩ mới';
+            document.getElementById('doctor-form').reset();
+            document.getElementById('doctor-password').style.display = 'block';
+            document.getElementById('doctor-password').previousElementSibling.style.display = 'block';
+            document.getElementById('doctor-modal').style.display = 'block';
+        }
+
+        function openEditDoctorModal(doctor) {
+            editingDoctorId = doctor.id;
+            document.getElementById('modal-title').textContent = 'Chỉnh sửa bác sĩ';
+            document.getElementById('doctor-form').reset();
+            
+            // Ẩn trường mật khẩu khi chỉnh sửa
+            document.getElementById('doctor-password').style.display = 'none';
+            document.getElementById('doctor-password').previousElementSibling.style.display = 'none';
+            
+            // Điền dữ liệu
+            document.getElementById('doctor-name').value = doctor.name || '';
+            document.getElementById('doctor-email').value = doctor.email || '';
+            document.getElementById('doctor-phone').value = doctor.phone || '';
+            document.getElementById('specialty-select').value = doctor.specialty_id || '';
+            document.getElementById('license-number').value = doctor.license_number || '';
+            document.getElementById('experience').value = doctor.experience_years || '';
+            document.getElementById('education').value = doctor.education || '';
+            document.getElementById('consultation-fee').value = doctor.consultation_fee || '';
+            document.getElementById('bio').value = doctor.bio || '';
+            
+            document.getElementById('doctor-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('doctor-modal').style.display = 'none';
+            editingDoctorId = null;
+        }
+
+        async function saveDoctor() {
+            const formData = new FormData(document.getElementById('doctor-form'));
+            const data = Object.fromEntries(formData.entries());
+            
+            // Validate required fields
+            if (!data.name || !data.email || (!editingDoctorId && !data.password) || !data.specialty_id || !data.license_number || !data.experience_years) {
+                showError('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+
+            try {
+                const user = getUser();
+                let response;
+                
+                if (editingDoctorId) {
+                    // Update existing doctor
+                    response = await fetch(`${window.location.origin}/api/admin/doctors/${editingDoctorId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Create new doctor
+                    response = await fetch(`${window.location.origin}/api/admin/doctors`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    closeModal();
+                    loadDoctors();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error saving doctor:', error);
+                showError('Có lỗi xảy ra khi lưu hồ sơ bác sĩ');
+            }
+        }
+
+        async function deleteDoctor(doctorId) {
+            if (!confirm('Bạn có chắc muốn xóa bác sĩ này?')) return;
+            
+            try {
+                const user = getUser();
+                const response = await fetch(`${window.location.origin}/api/admin/doctors/${doctorId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    loadDoctors();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error deleting doctor:', error);
+                showError('Có lỗi xảy ra khi xóa bác sĩ');
+            }
+        }
+
+        function showError(message) {
+            alert('Lỗi: ' + message);
+        }
+
+        function showSuccess(message) {
+            alert('Thành công: ' + message);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('doctor-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+    <style>
+        .admin-section {
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .doctors-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .doctors-table th,
+        .doctors-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .doctors-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .doctors-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .badge-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #1976d3;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .modal-close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+    </style>
+</body>
+</html>

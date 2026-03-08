@@ -1,0 +1,35 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="98" fill="white" stroke="#0052a3" stroke-width="3"/>
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#e63946" stroke-width="2"/>
+  
+  <!-- Blue cross (left and bottom) -->
+  <rect x="80" y="60" width="40" height="80" fill="#0052a3" rx="8"/>
+  <rect x="50" y="85" width="100" height="30" fill="#0052a3" rx="8"/>
+  
+  <!-- Red cross (top right corner) -->
+  <rect x="105" y="50" width="35" height="35" fill="#e63946" rx="6"/>
+  
+  <!-- Waves (medical/care symbolism) -->
+  <g stroke="#0052a3" stroke-width="3" fill="none" stroke-linecap="round">
+    <path d="M 70 130 Q 85 120 100 130 Q 115 140 130 130" opacity="0.8"/>
+    <path d="M 65 145 Q 85 132 100 145 Q 115 158 135 145" opacity="0.6"/>
+  </g>
+  
+  <!-- Red accent waves -->
+  <g stroke="#e63946" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M 75 135 Q 90 128 105 135" opacity="0.7"/>
+    <path d="M 70 150 Q 90 140 110 150" opacity="0.5"/>
+  </g>
+  
+  <!-- Stars -->
+  <circle cx="45" cy="100" r="4" fill="#e63946"/>
+  <circle cx="155" cy="100" r="4" fill="#e63946"/>
+  
+  <!-- Year text -->
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#e63946">2002</text>
+  
+  <!-- Hospital name (curved text effect - simplified) -->
+  <text x="100" y="30" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#0052a3">BỆNH VIỆN QUÂN DÂN Y</text>
+  <text x="100" y="42" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#0052a3">MIỀN ĐÔNG</text>
+</svg>

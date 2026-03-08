@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ cá nhân</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .profile-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, #0066cc, #004499);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+    }
+
+    .profile-header h1 {
+      font-size: 1.8rem;
+      color: #333;
+      margin: 0;
+    }
+
+    .profile-header p {
+      color: #999;
+      margin: 0.5rem 0 0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    .read-only {
+      background-color: #f9f9f9;
+      cursor: not-allowed;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .button-group button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #0066cc, #004499);
+      color: white;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+    }
+
+    .btn-back {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-back:hover {
+      background: #e0e0e0;
+    }
+
+    .success-message {
+      display: none;
+      padding: 1rem;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      animation: slideInDown 0.3s ease;
+    }
+
+    .error-message {
+      display: none;
+      padding: 1rem;
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      animation: slideInDown 0.3s ease;
+    }
+
+    .info-text {
+      font-size: 0.9rem;
+      color: #999;
+      margin-top: 0.3rem;
+    }
+
+    @media (max-width: 768px) {
+      .profile-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <i class="fas fa-hospital"></i>
+        <span>BV Quân Dân Y Miền Đông</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Trang chủ</a>
+        <a href="doctors.html" class="nav-link">Bác sĩ</a>
+        <a href="booking.html" class="nav-link">Đặt lịch</a>
+        <a href="about.html" class="nav-link">Giới thiệu</a>
+        <a href="login.html" class="nav-link">Đăng nhập</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="profile-container">
+    <div class="success-message" id="successMessage"></div>
+    <div class="error-message" id="errorMessage"></div>
+
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <h1 id="userName">Tên người dùng</h1>
+      <p id="userEmail">email@example.com</p>
+    </div>
+
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="email">Email <span style="color: #999;">(Không thể thay đổi)</span></label>
+        <input type="email" id="email" readonly class="read-only">
+      </div>
+
+      <div class="form-group">
+        <label for="name">Tên đầy đủ <span style="color: #ff6b6b;">*</span></label>
+        <input type="text" id="name" required>
+        <span class="info-text">Tên của bạn sẽ hiển thị trên các tài liệu y tế</span>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Số điện thoại</label>
+        <input type="tel" id="phone">
+        <span class="info-text">Để chúng tôi liên hệ với bạn khi cần</span>
+      </div>
+
+      <div class="form-group">
+        <label for="dateOfBirth">Ngày sinh</label>
+        <input type="date" id="dateOfBirth">
+        <span class="info-text">Định dạng: DD/MM/YYYY</span>
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Giới tính</label>
+        <select id="gender">
+          <option value="">-- Chọn giới tính --</option>
+          <option value="Nam">Nam</option>
+          <option value="Nữ">Nữ</option>
+          <option value="Khác">Khác</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Địa chỉ</label>
+        <input type="text" id="address" placeholder="Nhập địa chỉ của bạn">
+        <span class="info-text">Địa chỉ hiện tại để nhận thông báo</span>
+      </div>
+
+      <div class="form-group">
+        <label for="emergencyContact">Người liên hệ khẩn cấp</label>
+        <input type="text" id="emergencyContact" placeholder="Tên người thân">
+        <span class="info-text">Người sẽ được liên hệ trong trường hợp khẩn cấp</span>
+      </div>
+
+      <div class="form-group">
+        <label for="emergencyPhone">Số điện thoại khẩn cấp</label>
+        <input type="tel" id="emergencyPhone" placeholder="Số điện thoại người thân">
+        <span class="info-text">Số điện thoại của người liên hệ khẩn cấp</span>
+      </div>
+
+      <div class="form-group">
+        <label>Ngày tạo tài khoản</label>
+        <input type="text" id="createdAt" readonly class="read-only">
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn-back" id="backBtn">
+          <i class="fas fa-arrow-left"></i> Quay lại
+        </button>
+        <button type="submit" class="btn-save">
+          <i class="fas fa-save"></i> Lưu thay đổi
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // Cập nhật navbar khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateNavbarAuth();
+      const b = document.getElementById('backBtn');
+      if (b) b.addEventListener('click', function() { window.history.back(); });
+    });
+  </script>
+  <script src="chatbot.js"></script>
+  <script>
+    // Kiểm tra đăng nhập
+    if (!protectPage()) {
+      throw new Error("User not logged in");
+    }
+
+    const user = getUser();
+    const API = window.location.origin;
+
+    // Load thông tin user
+    async function loadUserProfile() {
+      try {
+        const response = await fetch(API + "/user/" + user.id);
+        const data = await response.json();
+
+        if (data.success) {
+          const userInfo = data.user;
+          document.getElementById("userName").textContent = userInfo.name;
+          document.getElementById("userEmail").textContent = userInfo.email;
+          document.getElementById("email").value = userInfo.email;
+          document.getElementById("name").value = userInfo.name;
+          document.getElementById("phone").value = userInfo.phone || "";
+          document.getElementById("dateOfBirth").value = userInfo.date_of_birth || "";
+          document.getElementById("gender").value = userInfo.gender || "";
+          document.getElementById("address").value = userInfo.address || "";
+          document.getElementById("emergencyContact").value = userInfo.emergency_contact || "";
+          document.getElementById("emergencyPhone").value = userInfo.emergency_phone || "";
+          document.getElementById("createdAt").value = new Date(userInfo.created_at).toLocaleDateString('vi-VN');
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
+        // Nếu server không phản hồi, fallback sang localStorage
+        const local = getUser();
+        if (local) {
+          document.getElementById("userName").textContent = local.name || "Tên người dùng";
+          document.getElementById("userEmail").textContent = local.email || "";
+          document.getElementById("email").value = local.email || "";
+          document.getElementById("name").value = local.name || "";
+          document.getElementById("phone").value = local.phone || "";
+          document.getElementById("dateOfBirth").value = local.date_of_birth || "";
+          document.getElementById("gender").value = local.gender || "";
+          document.getElementById("address").value = local.address || "";
+          document.getElementById("emergencyContact").value = local.emergency_contact || "";
+          document.getElementById("emergencyPhone").value = local.emergency_phone || "";
+          document.getElementById("createdAt").value = local.created_at ? new Date(local.created_at).toLocaleDateString('vi-VN') : "";
+        } else {
+          showError("Không thể tải thông tin hồ sơ");
+        }
+      }
+    }
+
+    // Submit form
+    document.getElementById("profileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const dateOfBirth = document.getElementById("dateOfBirth").value;
+      const gender = document.getElementById("gender").value;
+      const address = document.getElementById("address").value.trim();
+      const emergencyContact = document.getElementById("emergencyContact").value.trim();
+      const emergencyPhone = document.getElementById("emergencyPhone").value.trim();
+
+      if (!name) {
+        showError("Vui lòng nhập tên!");
+        return;
+      }
+
+      try {
+        const response = await fetch(API + "/user/" + user.id, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            name, 
+            phone, 
+            date_of_birth: dateOfBirth, 
+            gender, 
+            address, 
+            emergency_contact: emergencyContact, 
+            emergency_phone: emergencyPhone 
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Update localStorage
+          user.name = name;
+          user.phone = phone;
+          user.date_of_birth = dateOfBirth;
+          user.gender = gender;
+          user.address = address;
+          user.emergency_contact = emergencyContact;
+          user.emergency_phone = emergencyPhone;
+          setAuthToken(getAuthToken(), user);
+          
+          showSuccess("✅ Cập nhật hồ sơ thành công!");
+          document.getElementById("userName").textContent = name;
+          
+          setTimeout(() => {
+            updateNavbarAuth();
+          }, 500);
+        } else {
+            // Nếu server trả về lỗi, cho phép cập nhật tạm thời vào localStorage
+            user.name = name;
+            user.phone = phone;
+            setAuthToken(getAuthToken(), user);
+            showSuccess("✅ Cập nhật hồ sơ cục bộ thành công (chưa đồng bộ server).");
+            document.getElementById("userName").textContent = name;
+            setTimeout(() => {
+              updateNavbarAuth();
+            }, 500);
+        }
+      } catch (err) {
+        console.error("Error updating profile:", err);
+        // Nếu không thể kết nối tới server, lưu thay đổi vào localStorage để người dùng thấy ngay
+        user.name = name;
+        user.phone = phone;
+        setAuthToken(getAuthToken(), user);
+        showSuccess("✅ Cập nhật hồ sơ cục bộ thành công (chưa đồng bộ server).");
+        document.getElementById("userName").textContent = name;
+        setTimeout(() => {
+          updateNavbarAuth();
+        }, 500);
+      }
+    });
+
+    // Hiển thị thông báo
+    function showSuccess(msg) {
+      const el = document.getElementById("successMessage");
+      el.textContent = msg;
+      el.style.display = "block";
+      setTimeout(() => {
+        el.style.display = "none";
+      }, 3000);
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("errorMessage");
+      el.textContent = msg;
+      el.style.display = "block";
+      setTimeout(() => {
+        el.style.display = "none";
+      }, 3000);
+    }
+
+    // Load profile khi trang load
+    window.addEventListener("DOMContentLoaded", loadUserProfile);
+  </script>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-column footer-info">
+        <h3>Thông tin liên lạc</h3>
+        <p><strong>Bệnh viện Quân Dân Y Miền Đông</strong></p>
+        <p class="footer-address">Địa chỉ trụ sở chính: 50 Lê Văn Việt, TP Thủ Đức, TP.HCM</p>
+        <p><i class="fas fa-phone"></i> <strong>Cấp cứu:</strong> (028) 7777 7777 - 0332 363 655</p>
+        <p><i class="fas fa-phone"></i> <strong>Hotline:</strong> 082 884 5959</p>
+        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> info@bvquandany.com</p>
+      </div>
+      
+      <div class="footer-column footer-nav">
+        <div class="footer-nav-col">
+          <h4>Trang chủ</h4>
+          <ul>
+            <li><a href="index.html">Chuyên khoa</a></li>
+            <li><a href="booking.html">Dịch vụ</a></li>
+            <li><a href="#">Liên hệ</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Giới thiệu</h4>
+          <ul>
+            <li><a href="#">Dành cho đối tác</a></li>
+            <li><a href="#">Tin tức & Sự kiện</a></li>
+            <li><a href="#">Tuyển dụng</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 by BV Quân Dân Y Miền Đông. <a href="#" style="color: #0052a3; text-decoration: none;">Privacy Policy</a></p>
+    </div>
+  </footer>
+</body>
+</html>

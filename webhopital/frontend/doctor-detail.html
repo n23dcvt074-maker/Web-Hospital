@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết bác sĩ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .doctor-detail-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .doctor-header {
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .doctor-avatar-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+
+    .doctor-info h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2rem;
+    }
+
+    .doctor-specialty {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .doctor-stats {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rating-stars {
+      color: #ffd700;
+      font-size: 1.2rem;
+    }
+
+    .doctor-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .doctor-details,
+    .doctor-sidebar {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .detail-section {
+      margin-bottom: 2rem;
+    }
+
+    .detail-section h3 {
+      color: #333;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #666;
+    }
+
+    .detail-value {
+      color: #333;
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .schedule-day {
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .day-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .day-time {
+      color: #0066cc;
+      font-size: 0.9rem;
+    }
+
+    .book-appointment-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .book-appointment-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .ratings-section {
+      margin-top: 2rem;
+    }
+
+    .ratings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .rating-summary {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .average-rating {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .rating-breakdown {
+      flex: 1;
+    }
+
+    .rating-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .rating-stars-small {
+      width: 80px;
+      color: #ffd700;
+    }
+
+    .rating-progress {
+      flex: 1;
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .rating-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+      border-radius: 4px;
+    }
+
+    .rating-count {
+      font-size: 0.9rem;
+      color: #666;
+      min-width: 30px;
+      text-align: right;
+    }
+
+    .reviews-list {
+      margin-top: 2rem;
+    }
+
+    .review-item {
+      padding: 1.5rem;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .reviewer-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .review-date {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .review-rating {
+      color: #ffd700;
+      margin-bottom: 0.5rem;
+    }
+
+    .review-text {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .rate-doctor-section {
+      background: #f8f9fa;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+    }
+
+    .rate-doctor-section h3 {
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    .rating-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .star {
+      font-size: 1.5rem;
+      color: #ddd;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .star.active {
+      color: #ffd700;
+    }
+
+    .rate-form textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      resize: vertical;
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+
+    .anonymous-checkbox {
+      margin-bottom: 1rem;
+    }
+
+    .submit-rating-btn {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .submit-rating-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .doctor-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .doctor-content {
+        grid-template-columns: 1fr;
+      }
+
+      .doctor-stats {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <i class="fas fa-hospital"></i>
+        <span>WebHopital</span>
+      </div>
+      <div class="nav-menu">
+        <a href="index.html" class="nav-link">Trang chủ</a>
+        <a href="doctors.html" class="nav-link">Bác sĩ</a>
+        <a href="booking.html" class="nav-link">Đặt lịch</a>
+        <a href="about.html" class="nav-link">Giới thiệu</a>
+        <div class="nav-auth">
+          <button class="btn-login" id="userMenuBtn">
+            <i class="fas fa-user-circle"></i> Tài khoản
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="doctor-detail-container">
+    <div id="doctorContent">
+      <!-- Doctor details will be loaded here -->
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      updateNavbarAuth();
+      loadDoctorDetails();
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const doctorId = urlParams.get('id');
+    const API = window.location.origin;
+
+    async function loadDoctorDetails() {
+      if (!doctorId) {
+        document.getElementById('doctorContent').innerHTML = '<p style="text-align: center; color: #666;">Không tìm thấy thông tin bác sĩ.</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API}/doctors/${doctorId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          renderDoctorDetails(data.doctor);
+        } else {
+          document.getElementById('doctorContent').innerHTML = '<p style="text-align: center; color: #666;">Không tìm thấy thông tin bác sĩ.</p>';
+        }
+      } catch (error) {
+        console.error('Error loading doctor details:', error);
+        document.getElementById('doctorContent').innerHTML = '<p style="text-align: center; color: #666;">Lỗi khi tải thông tin bác sĩ.</p>';
+      }
+    }
+
+    function renderDoctorDetails(doctor) {
+      const container = document.getElementById('doctorContent');
+
+      // Convert day_of_week to Vietnamese day names
+      const dayNames = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+
+      container.innerHTML = `
+        <div class="doctor-header">
+          <div class="doctor-avatar-large">
+            <i class="fas fa-user-md"></i>
+          </div>
+          <div class="doctor-info">
+            <h1>${doctor.name}</h1>
+            <div class="doctor-specialty">
+              <i class="fas fa-stethoscope"></i> ${doctor.specialty_name || 'Chuyên khoa'}
+            </div>
+            <div class="doctor-stats">
+              <div class="stat-item">
+                <i class="fas fa-star"></i>
+                <span class="rating-stars">${'★'.repeat(Math.floor(doctor.average_rating))}${'☆'.repeat(5 - Math.floor(doctor.average_rating))}</span>
+                <span>${doctor.average_rating} (${doctor.total_ratings} đánh giá)</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span>${doctor.experience_years || 0} năm kinh nghiệm</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-dollar-sign"></i>
+                <span>${doctor.consultation_fee ? doctor.consultation_fee.toLocaleString('vi-VN') + ' VNĐ' : 'Liên hệ'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="doctor-content">
+          <div class="doctor-details">
+            <div class="detail-section">
+              <h3><i class="fas fa-info-circle"></i> Thông tin chung</h3>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Họ tên:</span>
+                  <span class="detail-value">${doctor.name}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Chuyên khoa:</span>
+                  <span class="detail-value">${doctor.specialty_name || 'Chưa cập nhật'}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Số giấy phép:</span>
+                  <span class="detail-value">${doctor.license_number || 'Chưa cập nhật'}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Kinh nghiệm:</span>
+                  <span class="detail-value">${doctor.experience_years || 0} năm</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Phí khám:</span>
+                  <span class="detail-value">${doctor.consultation_fee ? doctor.consultation_fee.toLocaleString('vi-VN') + ' VNĐ' : 'Liên hệ'}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Trạng thái:</span>
+                  <span class="detail-value">${doctor.is_available ? 'Đang làm việc' : 'Tạm nghỉ'}</span>
+                </div>
+              </div>
+            </div>
+
+            ${doctor.bio ? `
+            <div class="detail-section">
+              <h3><i class="fas fa-user"></i> Tiểu sử</h3>
+              <p style="line-height: 1.6; color: #555;">${doctor.bio}</p>
+            </div>
+            ` : ''}
+
+            ${doctor.education ? `
+            <div class="detail-section">
+              <h3><i class="fas fa-graduation-cap"></i> Học vấn</h3>
+              <p style="line-height: 1.6; color: #555;">${doctor.education}</p>
+            </div>
+            ` : ''}
+
+            ${doctor.certifications ? `
+            <div class="detail-section">
+              <h3><i class="fas fa-certificate"></i> Chứng chỉ</h3>
+              <p style="line-height: 1.6; color: #555;">${doctor.certifications}</p>
+            </div>
+            ` : ''}
+
+            <div class="detail-section">
+              <h3><i class="fas fa-calendar-alt"></i> Lịch làm việc</h3>
+              <div class="schedule-grid">
+                ${doctor.schedules && doctor.schedules.length > 0
+                  ? doctor.schedules.map(schedule => `
+                      <div class="schedule-day">
+                        <div class="day-name">${dayNames[schedule.day_of_week]}</div>
+                        <div class="day-time">${schedule.start_time} - ${schedule.end_time}</div>
+                      </div>
+                    `).join('')
+                  : '<p style="color: #666; font-style: italic;">Chưa cập nhật lịch làm việc</p>'
+                }
+              </div>
+            </div>
+
+            <div class="ratings-section">
+              <div class="ratings-header">
+                <h3><i class="fas fa-star"></i> Đánh giá từ bệnh nhân</h3>
+                <div class="rating-summary">
+                  <span class="average-rating">${doctor.average_rating}</span>
+                  <span class="rating-stars">${'★'.repeat(Math.floor(doctor.average_rating))}${'☆'.repeat(5 - Math.floor(doctor.average_rating))}</span>
+                  <span>(${doctor.total_ratings} đánh giá)</span>
+                </div>
+              </div>
+
+              ${doctor.ratings && doctor.ratings.length > 0 ? `
+                <div class="reviews-list">
+                  ${doctor.ratings.map(rating => `
+                    <div class="review-item">
+                      <div class="review-header">
+                        <span class="reviewer-name">${rating.patient_name}</span>
+                        <span class="review-date">${new Date(rating.created_at).toLocaleDateString('vi-VN')}</span>
+                      </div>
+                      <div class="review-rating">
+                        ${'★'.repeat(rating.rating)}${'☆'.repeat(5 - rating.rating)}
+                      </div>
+                      ${rating.review_text ? `<div class="review-text">${rating.review_text}</div>` : ''}
+                    </div>
+                  `).join('')}
+                </div>
+              ` : '<p style="color: #666; font-style: italic;">Chưa có đánh giá nào</p>'}
+            </div>
+
+            <div class="rate-doctor-section">
+              <h3><i class="fas fa-edit"></i> Đánh giá bác sĩ</h3>
+              <div id="ratingForm">
+                <!-- Rating form will be loaded here -->
+              </div>
+            </div>
+          </div>
+
+          <div class="doctor-sidebar">
+            <button class="book-appointment-btn" onclick="bookAppointment(${doctor.id})">
+              <i class="fas fa-calendar-plus"></i> Đặt lịch khám
+            </button>
+
+            <a href="booking.html?doctor=${doctor.id}" class="book-appointment-btn" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); text-decoration: none; display: inline-block; text-align: center; margin-bottom: 1rem;">
+              <i class="fas fa-calendar-alt"></i> Đặt lịch nhanh
+            </a>
+
+            <div class="detail-section">
+              <h3><i class="fas fa-phone"></i> Liên hệ</h3>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Điện thoại:</span>
+                  <span class="detail-value">${doctor.phone || 'Chưa cập nhật'}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">Email:</span>
+                  <span class="detail-value">${doctor.email || 'Chưa cập nhật'}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <h3><i class="fas fa-map-marker-alt"></i> Địa chỉ</h3>
+              <p style="color: #555;">Bệnh viện Quân Dân Y Miền Đông<br>
+              50 Lê Văn Việt, Quận 9<br>
+              TP. Hồ Chí Minh</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Load rating form
+      loadRatingForm(doctor.id);
+    }
+
+    function bookAppointment(doctorId) {
+      window.location.href = `booking.html?doctor=${doctorId}`;
+    }
+
+    function loadRatingForm(doctorId) {
+      const user = getUser();
+      const formContainer = document.getElementById('ratingForm');
+
+      if (!user) {
+        formContainer.innerHTML = '<p style="color: #666; text-align: center;">Vui lòng <a href="login.html">đăng nhập</a> để đánh giá bác sĩ.</p>';
+        return;
+      }
+
+      formContainer.innerHTML = `
+        <div class="rating-input">
+          <label>Đánh giá:</label>
+          <div class="star-rating" id="starRating">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+          </div>
+        </div>
+        <form class="rate-form" id="rateForm">
+          <textarea placeholder="Viết nhận xét của bạn (tùy chọn)..." rows="4"></textarea>
+          <label class="anonymous-checkbox">
+            <input type="checkbox" id="anonymous"> Đánh giá ẩn danh
+          </label>
+          <button type="submit" class="submit-rating-btn">
+            <i class="fas fa-paper-plane"></i> Gửi đánh giá
+          </button>
+        </form>
+      `;
+
+      // Star rating functionality
+      let selectedRating = 0;
+      const stars = document.querySelectorAll('.star');
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          selectedRating = parseInt(this.dataset.rating);
+          stars.forEach((s, index) => {
+            if (index < selectedRating) {
+              s.classList.add('active');
+            } else {
+              s.classList.remove('active');
+            }
+          });
+        });
+      });
+
+      // Form submission
+      document.getElementById('rateForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (selectedRating === 0) {
+          alert('Vui lòng chọn số sao đánh giá!');
+          return;
+        }
+
+        const reviewText = this.querySelector('textarea').value;
+        const isAnonymous = document.getElementById('anonymous').checked;
+
+        try {
+          const response = await fetch(`${API}/doctors/${doctorId}/rate`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify({
+              rating: selectedRating,
+              review_text: reviewText,
+              is_anonymous: isAnonymous
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            alert('Cảm ơn bạn đã đánh giá!');
+            location.reload();
+          } else {
+            alert('Lỗi: ' + (data.message || 'Không thể gửi đánh giá'));
+          }
+        } catch (error) {
+          console.error('Error submitting rating:', error);
+          alert('Lỗi kết nối mạng!');
+        }
+      });
+    }
+  </script>
+  <script src="chatbot.js"></script>
+</body>
+</html>

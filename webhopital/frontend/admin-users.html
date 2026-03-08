@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng - WebHopital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --primary-light: #e3f2fd;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --info: #26a69a;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg: #f5f7fa;
+            --border: #e8eaed;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .admin-section {
+            margin-top: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.6rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            min-width: 200px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .users-table th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .users-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .users-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .users-table tbody tr:hover {
+            background: var(--primary-light);
+        }
+
+        .users-table td {
+            padding: 1.2rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, #ffe0b2 0%, #ffb74d 100%);
+            color: #e65100;
+        }
+
+        .role-doctor {
+            background: linear-gradient(135deg, #c8e6c9 0%, #81c784 100%);
+            color: #1b5e20;
+        }
+
+        .role-patient {
+            background: linear-gradient(135deg, #b3e5fc 0%, #4fc3f7 100%);
+            color: #01579b;
+        }
+
+        .status-active {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-edit {
+            padding: 0.4rem 0.75rem;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: var(--primary);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            padding: 0.4rem 0.75rem;
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: var(--danger);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--bg);
+            border-radius: 0 0 16px 16px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                justify-content: stretch;
+            }
+
+            .btn-primary {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group input,
+            .filter-group select {
+                min-width: 100%;
+            }
+
+            .users-table,
+            .users-table th,
+            .users-table td {
+                font-size: 0.85rem;
+            }
+
+            .users-table th,
+            .users-table td {
+                padding: 0.8rem 0.6rem;
+            }
+
+            .modal-content {
+                margin: 20% auto;
+                width: 95%;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital"></i>
+                <span>WebHopital</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Trang chủ</a>
+                <a href="doctors.html" class="nav-link">Bác sĩ</a>
+                <a href="about.html" class="nav-link">Giới thiệu</a>
+                <div class="nav-auth">
+                    <button class="btn-login" id="userMenuBtn">
+                        <i class="fas fa-user-circle"></i> Tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> Quản lý người dùng</h1>
+            <p>Quản lý tất cả tài khoản người dùng trong hệ thống</p>
+        </div>
+
+        <div class="admin-section">
+            <div class="section-header">
+                <h2>Danh sách người dùng</h2>
+                <div class="action-buttons">
+                    <button class="btn-primary" id="addUserBtn">
+                        <i class="fas fa-plus"></i> Thêm người dùng
+                    </button>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Tìm kiếm:</label>
+                    <input type="text" id="search-input" placeholder="Tên, email...">
+                </div>
+                <div class="filter-group">
+                    <label>Vai trò:</label>
+                    <select id="role-filter">
+                        <option value="all">Tất cả</option>
+                        <option value="patient">Bệnh nhân</option>
+                        <option value="doctor">Bác sĩ</option>
+                        <option value="admin">Quản trị viên</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Trạng thái:</label>
+                    <select id="status-filter">
+                        <option value="all">Tất cả</option>
+                        <option value="active">Hoạt động</option>
+                        <option value="inactive">Không hoạt động</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="users-table-container" class="table-container">
+                <table class="users-table admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="loading-spinner" class="loading-spinner" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Đang tải...
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Thêm người dùng mới</h3>
+                <span class="modal-close" id="modalCloseBtn">&times;</span>
+            </div>
+            <form id="user-form" class="modal-body">
+                <div class="form-group">
+                    <label for="user-name">Họ tên *</label>
+                    <input type="text" id="user-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email *</label>
+                    <input type="email" id="user-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-password">Mật khẩu *</label>
+                    <input type="password" id="user-password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-role">Vai trò *</label>
+                    <select id="user-role" name="role" required>
+                        <option value="patient">Bệnh nhân</option>
+                        <option value="doctor">Bác sĩ</option>
+                        <option value="admin">Quản trị viên</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="user-phone">Số điện thoại</label>
+                    <input type="tel" id="user-phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="user-dob">Ngày sinh</label>
+                    <input type="date" id="user-dob" name="date_of_birth">
+                </div>
+                <div class="form-group">
+                    <label for="user-address">Địa chỉ</label>
+                    <textarea id="user-address" name="address" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="user-status">Trạng thái</label>
+                    <select id="user-status" name="status">
+                        <option value="active">Hoạt động</option>
+                        <option value="inactive">Không hoạt động</option>
+                    </select>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="modalCancelBtn">Hủy</button>
+                <button type="button" class="btn-primary" id="modalSaveBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const search = document.getElementById('search-input'); if (search) search.addEventListener('keyup', filterUsers);
+            const role = document.getElementById('role-filter'); if (role) role.addEventListener('change', filterUsers);
+            const status = document.getElementById('status-filter'); if (status) status.addEventListener('change', filterUsers);
+            const userBtn = document.getElementById('userMenuBtn'); if (userBtn) userBtn.addEventListener('click', showUserMenu);
+            const addBtn = document.getElementById('addUserBtn'); if (addBtn) addBtn.addEventListener('click', openAddUserModal);
+            const modalClose = document.getElementById('modalCloseBtn'); if (modalClose) modalClose.addEventListener('click', closeModal);
+            const modalCancel = document.getElementById('modalCancelBtn'); if (modalCancel) modalCancel.addEventListener('click', closeModal);
+            const modalSave = document.getElementById('modalSaveBtn'); if (modalSave) modalSave.addEventListener('click', saveUser);
+            document.getElementById('users-table-container').addEventListener('click', function(e) {
+                const ed = e.target.closest('.btn-edit');
+                const dl = e.target.closest('.btn-delete');
+                if (ed) {e.stopPropagation(); const id = ed.dataset.id; if (id) editUser(id);} 
+                if (dl) {e.stopPropagation(); const id = dl.dataset.id; if (id) deleteUser(id);} 
+            });
+        });
+    </script>
+    <script>
+        let users = [];
+        let currentUserId = null;
+
+        // Load users when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbarAuth();
+            loadUsers();
+        });
+
+        // Load all users
+        async function loadUsers() {
+            try {
+                const user = getUser();
+                if (!user || user.role !== 'admin') {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`${window.location.origin}/api/admin/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    users = result.users;
+                    displayUsers(users);
+                } else {
+                    showError(result.message || 'Không thể tải danh sách người dùng');
+                    displayUsers([]);
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showError('Lỗi kết nối mạng');
+                displayUsers([]);
+            }
+        }
+
+        // Display users in table
+        function displayUsers(usersList) {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '';
+
+            if (usersList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>Không tìm thấy người dùng nào</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            usersList.forEach(user => {
+                const row = createUserRow(user);
+                tbody.appendChild(row);
+            });
+        }
+
+        // Create user table row
+        function createUserRow(user) {
+            const row = document.createElement('tr');
+
+            const roleText = {
+                'admin': 'Quản trị viên',
+                'doctor': 'Bác sĩ',
+                'patient': 'Bệnh nhân'
+            };
+
+            const statusText = {
+                'active': 'Hoạt động',
+                'inactive': 'Không hoạt động'
+            };
+
+            const statusClass = {
+                'active': 'status-active',
+                'inactive': 'status-inactive'
+            };
+
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td><span class="role-badge role-${user.role}">${roleText[user.role]}</span></td>
+                <td><span class="status-badge ${statusClass[user.status]}">${statusText[user.status]}</span></td>
+                <td>${new Date(user.created_at).toLocaleDateString('vi-VN')}</td>
+                <td class="actions">
+                    <button class="btn-edit" data-id="${user.id}" title="Chỉnh sửa">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-delete" data-id="${user.id}" title="Xóa">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            return row;
+        }
+
+        // Filter users
+        function filterUsers() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const roleFilter = document.getElementById('role-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+
+            let filteredUsers = users.filter(user => {
+                const matchesSearch = user.name.toLowerCase().includes(searchTerm) ||
+                                    user.email.toLowerCase().includes(searchTerm);
+                const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+                const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+
+            displayUsers(filteredUsers);
+        }
+
+        // Show add user modal
+        function openAddUserModal() {
+            currentUserId = null;
+            document.getElementById('modal-title').textContent = 'Thêm người dùng mới';
+            document.getElementById('user-form').reset();
+            document.getElementById('user-password').style.display = 'block';
+            document.getElementById('user-password').previousElementSibling.style.display = 'block';
+            document.getElementById('user-modal').style.display = 'block';
+        }
+
+        // Edit user
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            currentUserId = userId;
+            document.getElementById('modal-title').textContent = 'Chỉnh sửa người dùng';
+            
+            // Ẩn trường mật khẩu khi chỉnh sửa
+            document.getElementById('user-password').style.display = 'none';
+            document.getElementById('user-password').previousElementSibling.style.display = 'none';
+
+            // Fill form with user data
+            document.getElementById('user-name').value = user.name;
+            document.getElementById('user-email').value = user.email;
+            document.getElementById('user-role').value = user.role;
+            document.getElementById('user-phone').value = user.phone || '';
+            document.getElementById('user-dob').value = user.date_of_birth ? user.date_of_birth.split('T')[0] : '';
+            document.getElementById('user-address').value = user.address || '';
+            document.getElementById('user-status').value = user.is_active ? 'active' : 'inactive';
+
+            document.getElementById('user-modal').style.display = 'block';
+        }
+
+        // Save user
+        async function saveUser() {
+            const formData = new FormData(document.getElementById('user-form'));
+            const data = Object.fromEntries(formData.entries());
+            
+            // Validate required fields
+            if (!data.name || !data.email || (!currentUserId && !data.password) || !data.role) {
+                showError('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+
+            try {
+                const user = getUser();
+                let response;
+                
+                if (currentUserId) {
+                    // Update existing user
+                    response = await fetch(`${window.location.origin}/api/admin/users/${currentUserId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // Create new user
+                    response = await fetch(`${window.location.origin}/api/admin/users`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    closeModal();
+                    loadUsers();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error saving user:', error);
+                showError('Có lỗi xảy ra khi lưu người dùng');
+            }
+        }
+
+        // Delete user
+        async function deleteUser(userId) {
+            if (!confirm('Bạn có chắc muốn xóa người dùng này?')) return;
+            
+            try {
+                const user = getUser();
+                const response = await fetch(`${window.location.origin}/api/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    loadUsers();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                showError('Có lỗi xảy ra khi xóa người dùng');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('user-modal').style.display = 'none';
+            currentUserId = null;
+        }
+
+        // Helper functions
+        function showLoading(show) {
+            document.getElementById('loading-spinner').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            alert('Lỗi: ' + message);
+        }
+
+        function showSuccess(message) {
+            alert('Thành công: ' + message);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('user-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+    <style>
+        .admin-section {
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .users-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .users-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .role-badge,
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .role-admin {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .role-doctor {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .role-patient {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #1976d3;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .loading-spinner i {
+            margin-right: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .modal-close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .filters-section {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .filter-group {
+                min-width: auto;
+            }
+
+            .users-table {
+                font-size: 0.8rem;
+            }
+
+            .users-table th,
+            .users-table td {
+                padding: 0.5rem;
+            }
+
+            .actions {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo thống kê - WebHopital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --primary-light: #e3f2fd;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --info: #26a69a;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg: #f5f7fa;
+            --border: #e8eaed;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .reports-section {
+            margin-top: 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--info));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .stat-content h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            margin: 0 0 0.3rem 0;
+            color: var(--text);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stat-change {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .reports-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .reports-container h2 {
+            margin: 0 0 2rem 0;
+            color: var(--text);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .report-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            color: var(--primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .report-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .report-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .report-content h3 {
+            margin: 0 0 1.5rem 0;
+            color: var(--text);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .report-content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .report-content thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .report-content th {
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .report-content tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .report-content tbody tr:hover {
+            background: var(--primary-light);
+        }
+
+        .report-content tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .report-content td {
+            padding: 1.2rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .reports-container {
+                padding: 1.5rem;
+            }
+
+            .report-tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+                flex: 1;
+            }
+
+            .report-content th,
+            .report-content td {
+                padding: 0.8rem 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital"></i>
+                <span>WebHopital</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Trang chủ</a>
+                <a href="doctors.html" class="nav-link">Bác sĩ</a>
+                <a href="about.html" class="nav-link">Giới thiệu</a>
+                <div class="nav-auth">
+                    <button class="btn-login" id="userMenuBtn">
+                        <i class="fas fa-user-circle"></i> Tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-chart-bar"></i> Báo cáo thống kê</h1>
+            <p>Xem báo cáo và thống kê hoạt động của bệnh viện</p>
+        </div>
+
+        <div class="reports-section">
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Bệnh nhân</h3>
+                        <p class="stat-value">250</p>
+                        <p class="stat-change">↑ 12% từ tháng trước</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Bác sĩ</h3>
+                        <p class="stat-value">45</p>
+                        <p class="stat-change">Hoạt động bình thường</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Cuộc hẹn</h3>
+                        <p class="stat-value">1,256</p>
+                        <p class="stat-change">Tháng này</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Doanh thu</h3>
+                        <p class="stat-value">125M</p>
+                        <p class="stat-change">↑ 8% từ tháng trước</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div class="reports-container">
+                <h2>Báo cáo chi tiết</h2>
+
+                <div class="report-tabs">
+                    <button class="tab-button active" data-tab="appointments">
+                        <i class="fas fa-calendar"></i> Lịch hẹn
+                    </button>
+                    <button class="tab-button" data-tab="doctors">
+                        <i class="fas fa-user-md"></i> Bác sĩ
+                    </button>
+                    <button class="tab-button" data-tab="revenue">
+                        <i class="fas fa-chart-pie"></i> Doanh thu
+                    </button>
+                    <button class="tab-button" data-tab="specialties">
+                        <i class="fas fa-stethoscope"></i> Chuyên khoa
+                    </button>
+                </div>
+
+                <!-- Appointments Report -->
+                <div id="appointments-report" class="report-content active">
+                    <h3>Báo cáo lịch hẹn</h3>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Tháng</th>
+                                    <th>Tổng hẹn</th>
+                                    <th>Đã khám</th>
+                                    <th>Đang chờ</th>
+                                    <th>Hủy bỏ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tháng 1</td>
+                                    <td>245</td>
+                                    <td>230</td>
+                                    <td>10</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>Tháng 2</td>
+                                    <td>268</td>
+                                    <td>255</td>
+                                    <td>8</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>Tháng 3</td>
+                                    <td>290</td>
+                                    <td>275</td>
+                                    <td>10</td>
+                                    <td>5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Doctors Report -->
+                <div id="doctors-report" class="report-content">
+                    <h3>Báo cáo hoạt động bác sĩ</h3>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Bác sĩ</th>
+                                    <th>Chuyên khoa</th>
+                                    <th>Số bệnh nhân</th>
+                                    <th>Số cuộc hẹn</th>
+                                    <th>Tỷ lệ hài lòng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>BS Nguyễn Văn A</td>
+                                    <td>Tim mạch</td>
+                                    <td>105</td>
+                                    <td>142</td>
+                                    <td>4.8/5</td>
+                                </tr>
+                                <tr>
+                                    <td>BS Trần Thị B</td>
+                                    <td>Tai mũi họng</td>
+                                    <td>95</td>
+                                    <td>128</td>
+                                    <td>4.7/5</td>
+                                </tr>
+                                <tr>
+                                    <td>BS Lê Văn C</td>
+                                    <td>Nội tổng quát</td>
+                                    <td>115</td>
+                                    <td>156</td>
+                                    <td>4.9/5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Revenue Report -->
+                <div id="revenue-report" class="report-content">
+                    <h3>Báo cáo doanh thu</h3>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Tháng</th>
+                                    <th>Doanh thu khám</th>
+                                    <th>Doanh thu xét nghiệm</th>
+                                    <th>Doanh thu khác</th>
+                                    <th>Tổng cộng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tháng 1</td>
+                                    <td>45M</td>
+                                    <td>25M</td>
+                                    <td>5M</td>
+                                    <td>75M</td>
+                                </tr>
+                                <tr>
+                                    <td>Tháng 2</td>
+                                    <td>48M</td>
+                                    <td>28M</td>
+                                    <td>6M</td>
+                                    <td>82M</td>
+                                </tr>
+                                <tr>
+                                    <td>Tháng 3</td>
+                                    <td>52M</td>
+                                    <td>30M</td>
+                                    <td>7M</td>
+                                    <td>89M</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Specialties Report -->
+                <div id="specialties-report" class="report-content">
+                    <h3>Báo cáo theo chuyên khoa</h3>
+                    <div class="table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Chuyên khoa</th>
+                                    <th>Số lượng bác sĩ</th>
+                                    <th>Số bệnh nhân</th>
+                                    <th>Số cuộc hẹn</th>
+                                    <th>Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tim mạch</td>
+                                    <td>8</td>
+                                    <td>125</td>
+                                    <td>180</td>
+                                    <td>22M</td>
+                                </tr>
+                                <tr>
+                                    <td>Tai mũi họng</td>
+                                    <td>6</td>
+                                    <td>95</td>
+                                    <td>135</td>
+                                    <td>18M</td>
+                                </tr>
+                                <tr>
+                                    <td>Nội tổng quát</td>
+                                    <td>12</td>
+                                    <td>180</td>
+                                    <td>280</td>
+                                    <td>35M</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userBtn = document.getElementById('userMenuBtn'); if (userBtn) userBtn.addEventListener('click', showUserMenu);
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const t = btn.dataset.tab;
+                    if (t) switchTab(t);
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbarAuth();
+            // Check authentication
+            const user = getUser();
+            if (!user || user.role !== 'admin') {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.report-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-report').classList.add('active');
+
+            // Add active class to clicked button
+            event.target.closest('.tab-button').classList.add('active');
+        }
+    </script>
+
+    <style>
+        .reports-section {
+            margin-top: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 1rem;
+            vertical-align: middle;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #0066cc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-content h3 {
+            margin: 0 0 0.5rem;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .stat-value {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .stat-change {
+            margin: 0.25rem 0 0;
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .reports-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .reports-container h2 {
+            margin: 0 0 1.5rem;
+            color: #333;
+        }
+
+        .report-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.95rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-button:hover {
+            color: #0066cc;
+        }
+
+        .tab-button.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+
+        .report-content {
+            display: none;
+        }
+
+        .report-content.active {
+            display: block;
+        }
+
+        .report-content h3 {
+            margin: 0 0 1.5rem;
+            color: #333;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #eee;
+        }
+
+        .table-container td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table-container tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-tabs {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .tab-button {
+                border-bottom: none;
+                border-left: 3px solid transparent;
+                padding: 0.75rem 1rem;
+                justify-content: flex-start;
+            }
+
+            .tab-button.active {
+                border-left-color: #0066cc;
+            }
+
+            .table-container {
+                font-size: 0.85rem;
+            }
+
+            .table-container th,
+            .table-container td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</body>
+</html>

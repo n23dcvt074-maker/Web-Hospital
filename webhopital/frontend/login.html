@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập - BV Quân Dân Y Miền Đông</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+      padding: 2rem;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 450px;
+      padding: 3rem 2rem;
+      animation: slideInUp 0.6s ease;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header i {
+      font-size: 3rem;
+      color: #0066cc;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .login-header h1 {
+      color: #0066cc;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-header p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    .form-group label i {
+      color: #0066cc;
+      margin-right: 0.5rem;
+      width: 18px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 0 4px rgba(0,102,204,0.1);
+    }
+
+    .error-message {
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      margin-top: -0.8rem;
+      margin-bottom: 0.8rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .form-group input.error-input {
+      border-color: #ff6b6b;
+    }
+
+    .form-group input.error-input:focus {
+      box-shadow: 0 0 0 4px rgba(255,107,107,0.1);
+    }
+
+    .form-group input::placeholder {
+      color: #999;
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .remember-forgot input[type="checkbox"] {
+      width: auto;
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+
+    .remember-forgot label {
+      cursor: pointer;
+      color: #666;
+      margin: 0;
+    }
+
+    .remember-forgot a {
+      color: #0066cc;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .remember-forgot a:hover {
+      color: #004499;
+      text-decoration: underline;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+      margin-bottom: 1rem;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,102,204,0.3);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: #999;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e0e0e0;
+    }
+
+    .login-divider span {
+      padding: 0 1rem;
+      font-size: 0.9rem;
+    }
+
+    .social-login {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .social-btn:hover {
+      border-color: #0066cc;
+      color: #0066cc;
+      background: #f0f7ff;
+    }
+
+    .signup-link {
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .signup-link a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+
+    .signup-link a:hover {
+      color: #004499;
+      text-decoration: underline;
+    }
+
+    .back-home {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+    }
+
+    .back-home a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: 0.3s ease;
+      font-weight: 600;
+    }
+
+    .back-home a:hover {
+      opacity: 0.8;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-box {
+        padding: 2rem 1.5rem;
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .social-login {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: slideInUp 0.3s ease;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .modal-close {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .modal-close:hover {
+      color: #333;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="back-home">
+    <a href="index.html">
+      <i class="fas fa-arrow-left"></i> Trang chủ
+    </a>
+  </div>
+
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-header">
+        <i class="fas fa-user-circle"></i>
+        <h1>Đăng Nhập</h1>
+        <p>Vào tài khoản của bạn</p>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email">
+            <i class="fas fa-envelope"></i> Email
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            placeholder="Nhập email của bạn"
+            required
+          >
+          <div class="error-message" id="emailError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">
+            <i class="fas fa-lock"></i> Mật khẩu
+          </label>
+          <input 
+            type="password" 
+            id="password" 
+            placeholder="Nhập mật khẩu của bạn"
+            required
+          >
+          <div class="error-message" id="passwordError"></div>
+        </div>
+
+        <div class="remember-forgot">
+          <label>
+            <input type="checkbox" id="remember"> Nhớ mật khẩu
+          </label>
+          <a href="#" id="forgotLink">Quên mật khẩu?</a>
+        </div>
+
+        <button type="submit" class="login-btn">
+          <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+        </button>
+      </form>
+
+      <div class="login-divider">
+        <span>hoặc</span>
+      </div>
+
+      <div class="social-login">
+        <button class="social-btn" id="googleLoginBtn">
+          <i class="fab fa-google"></i> Google
+        </button>
+        <a href="https://www.facebook.com/benhvienquandanymiendong?locale=vi_VN" target="_blank" class="social-btn" style="text-decoration: none; color: inherit;">
+          <i class="fab fa-facebook"></i> Facebook
+        </a>
+      </div>
+
+      <div class="signup-link">
+        Chưa có tài khoản? <a href="signup.html">Đăng ký ngay</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Quên mật khẩu</h3>
+        <span class="modal-close" id="forgotModalClose">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Nhập email của bạn để nhận link đặt lại mật khẩu:</p>
+        <form id="forgotForm">
+          <div class="form-group">
+            <label for="forgotEmail">Email:</label>
+            <input type="email" id="forgotEmail" placeholder="Nhập email của bạn" required>
+          </div>
+          <button type="submit" class="login-btn">Gửi link đặt lại</button>
+        </form>
+        <div id="forgotMessage" class="message" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = window.location.origin;
+
+    // Xử lý đăng nhập
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+      const remember = document.getElementById("remember").checked;
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      // Xóa lỗi cũ
+      emailError.classList.remove("show");
+      passwordError.classList.remove("show");
+      emailInput.classList.remove("error-input");
+      passwordInput.classList.remove("error-input");
+
+      // Kiểm tra email
+      if (!email) {
+        emailError.textContent = "❌ Vui lòng nhập email!";
+        emailError.classList.add("show");
+        emailInput.classList.add("error-input");
+        return;
+      }
+
+      // Kiểm tra password
+      if (!password) {
+        passwordError.textContent = "❌ Vui lòng nhập mật khẩu!";
+        passwordError.classList.add("show");
+        passwordInput.classList.add("error-input");
+        return;
+      }
+
+      // Kiểm tra định dạng email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        emailError.textContent = "❌ Email không hợp lệ!";
+        emailError.classList.add("show");
+        emailInput.classList.add("error-input");
+        return;
+      }
+
+      // Gửi request đăng nhập
+      fetch(API + "/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Lưu token
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            
+            // Lưu email nếu chọn "Nhớ mật khẩu"
+            if (remember) {
+              localStorage.setItem("savedEmail", email);
+            }
+
+            alert("✅ Đăng nhập thành công!");
+            
+            // Chuyển hướng
+            window.location.href = "index.html";
+          } else {
+            // Hiển thị lỗi chi tiết
+            if (data.message.includes("Email")) {
+              emailError.textContent = "❌ " + data.message;
+              emailError.classList.add("show");
+              emailInput.classList.add("error-input");
+            } else if (data.message.includes("Mật khẩu")) {
+              passwordError.textContent = "❌ " + data.message;
+              passwordError.classList.add("show");
+              passwordInput.classList.add("error-input");
+            } else {
+              alert("❌ " + (data.message || "Đăng nhập thất bại!"));
+            }
+          }
+        })
+        .catch(err => {
+          console.error("Lỗi:", err);
+          // Chế độ demo
+          alert("✅ Đăng nhập thành công (chế độ demo)!");
+          localStorage.setItem("token", "demo_token_" + Date.now());
+          localStorage.setItem("user", JSON.stringify({
+            email: email,
+            name: email.split("@")[0]
+          }));
+          window.location.href = "index.html";
+        });
+    }
+
+    // Đăng nhập với provider (Google, Facebook) using popup + postMessage
+    function loginWithProvider(provider) {
+      const width = 800, height = 600;
+      const left = (screen.width / 2) - (width / 2);
+      const top = (screen.height / 2) - (height / 2);
+      const popup = window.open(API + '/auth/' + provider, 'oauth_' + provider, `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no`);
+
+      // Listen for message from popup
+      function handleMessage(e) {
+        try {
+          const data = e.data || {};
+          if (data.success && data.token && data.user) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.removeEventListener('message', handleMessage);
+            alert('✅ Đăng nhập thành công bằng ' + provider);
+            window.location.href = 'index.html';
+          } else if (data.success === false) {
+            console.error('Auth failed', data.message);
+            window.removeEventListener('message', handleMessage);
+            alert('❌ Đăng nhập thất bại: ' + (data.message || 'Unknown'));
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      window.addEventListener('message', handleMessage);
+
+      // Show loading indicator to user
+      alert('🔐 Đang mở cửa sổ đăng nhập... Vui lòng chọn tài khoản ' + provider + ' của bạn.');
+
+      // Fallback: if popup blocked or not returned after 25s, show demo option
+      const fallbackTimer = setTimeout(() => {
+        try {
+          if (!popup || popup.closed) {
+            const ok = confirm('Popup bị chặn hoặc không trả lời. Muốn sử dụng chế độ demo không?');
+            if (ok) {
+              const ts = Date.now();
+              const demoUser = { id: 'demo_' + provider + '_' + ts, email: provider + '_user_' + ts + '@example.com', name: provider + ' Demo' };
+              localStorage.setItem('token', 'demo_' + provider + '_token_' + ts);
+              localStorage.setItem('user', JSON.stringify(demoUser));
+              window.location.href = 'index.html';
+            }
+          }
+        } catch (e) { console.error(e); }
+      }, 20000);
+    }
+
+    // Forgot Password Functions
+    function showForgotPasswordModal() {
+      document.getElementById('forgotModal').style.display = 'block';
+      document.getElementById('forgotMessage').style.display = 'none';
+      document.getElementById('forgotForm').reset();
+    }
+
+    function hideForgotPasswordModal() {
+      document.getElementById('forgotModal').style.display = 'none';
+    }
+
+    // Handle forgot password form
+    document.getElementById('forgotForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('forgotEmail').value.trim();
+      const messageDiv = document.getElementById('forgotMessage');
+      
+      if (!email) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Vui lòng nhập email!';
+        messageDiv.style.display = 'block';
+        return;
+      }
+      
+      try {
+        const response = await fetch(API + '/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          messageDiv.className = 'message success';
+          messageDiv.textContent = data.message;
+          messageDiv.style.display = 'block';
+          document.getElementById('forgotForm').reset();
+        } else {
+          messageDiv.className = 'message error';
+          messageDiv.textContent = data.message;
+          messageDiv.style.display = 'block';
+        }
+      } catch (error) {
+        messageDiv.className = 'message error';
+        messageDiv.textContent = 'Lỗi kết nối mạng!';
+        messageDiv.style.display = 'block';
+      }
+    });
+
+    // Modal close handlers
+    document.getElementById('forgotModalClose').addEventListener('click', hideForgotPasswordModal);
+    window.addEventListener('click', function(event) {
+      const modal = document.getElementById('forgotModal');
+      if (event.target === modal) {
+        hideForgotPasswordModal();
+      }
+    });
+
+    // Tải email đã lưu nếu có
+    window.addEventListener("DOMContentLoaded", () => {
+      // attach listeners for elements that previously used inline handlers
+      const forgot = document.getElementById('forgotLink');
+      if (forgot) {
+        forgot.addEventListener('click', function(e) {
+          e.preventDefault();
+          showForgotPasswordModal();
+        });
+      }
+      const googleBtn = document.getElementById('googleLoginBtn');
+      if (googleBtn) {
+        googleBtn.addEventListener('click', function() {
+          loginWithProvider('google');
+        });
+      }
+      const savedEmail = localStorage.getItem("savedEmail");
+      if (savedEmail) {
+        document.getElementById("email").value = savedEmail;
+        document.getElementById("remember").checked = true;
+      }
+    });
+  </script>
+
+  <script src="chatbot.js"></script>
+</body>
+</html>

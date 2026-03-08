@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch khám của tôi</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .appointments-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .appointments-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 3px solid #0066cc;
+    }
+
+    .appointments-header h1 {
+      font-size: 2rem;
+      color: #333;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .appointments-header p {
+      color: #999;
+      margin: 0.5rem 0 0;
+    }
+
+    .appointments-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .appointment-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      border-left: 4px solid #0066cc;
+      transition: 0.3s;
+    }
+
+    .appointment-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+    }
+
+    .appointment-card.past {
+      border-left-color: #ccc;
+      opacity: 0.7;
+    }
+
+    .appointment-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .doctor-info h3 {
+      margin: 0 0 0.3rem;
+      color: #333;
+      font-size: 1.1rem;
+    }
+
+    .specialty {
+      color: #0066cc;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .appointment-status {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-upcoming {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .status-past {
+      background: #e8e8e8;
+      color: #666;
+    }
+
+    .appointment-details {
+      display: grid;
+      gap: 1rem;
+      margin: 1rem 0;
+      padding: 1rem 0;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+    }
+
+    .detail-row i {
+      width: 20px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .detail-label {
+      color: #999;
+      min-width: 80px;
+    }
+
+    .detail-value {
+      color: #333;
+      font-weight: 500;
+    }
+
+    .appointment-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .appointment-actions button {
+      flex: 1;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-reschedule {
+      background: #0066cc;
+      color: white;
+    }
+
+    .btn-reschedule:hover {
+      background: #004499;
+      transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+      background: #ff6b6b;
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background: #ff5252;
+      transform: translateY(-2px);
+    }
+
+    .btn-disabled {
+      background: #ddd;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .btn-disabled:hover {
+      background: #ddd;
+      transform: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #999;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: #ddd;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-book-new {
+      background: linear-gradient(135deg, #0066cc, #004499);
+      color: white;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-book-new:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      color: #004499;
+    }
+
+    @media (max-width: 768px) {
+      .appointments-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .appointments-list {
+        grid-template-columns: 1fr;
+      }
+
+      .appointment-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand" style="text-decoration: none; color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+        <i class="fas fa-hospital"></i>
+        <span>BV Quân Dân Y Miền Đông</span>
+      </a>
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Trang chủ</a>
+        <a href="doctors.html" class="nav-link">Bác sĩ</a>
+        <a href="booking.html" class="nav-link">Đặt lịch</a>
+        <a href="about.html" class="nav-link">Giới thiệu</a>
+        <a href="login.html" class="nav-link">Đăng nhập</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="appointments-container">
+    <a href="#" id="backButton" class="back-button">
+      <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+
+    <div class="appointments-header">
+      <h1>
+        <i class="fas fa-calendar-check"></i>
+        Lịch khám của tôi
+      </h1>
+      <p>Quản lý và theo dõi các lịch khám bệnh của bạn</p>
+    </div>
+
+    <div id="appointmentsList" class="appointments-list"></div>
+
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <i class="fas fa-inbox"></i>
+      <p>Bạn chưa có lịch khám nào</p>
+      <a href="booking.html" class="btn-book-new">
+        <i class="fas fa-calendar"></i> Đặt lịch khám ngay
+      </a>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    // Cập nhật navbar khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateNavbarAuth();
+      const back = document.getElementById('backButton');
+      if (back) {
+        back.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.history.back();
+        });
+      }
+    });
+  </script>
+  <script>
+    // Kiểm tra đăng nhập
+    if (!protectPage()) {
+      throw new Error("User not logged in");
+    }
+
+    const user = getUser();
+    const API = window.location.origin;
+
+    // Load lịch khám
+    async function loadAppointments() {
+      try {
+        // Ưu tiên lấy theo user_id với authentication
+        const response = await fetch(API + "/appointments/user/" + user.id, {
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        });
+        const data = await response.json();
+
+        if (data.success && data.appointments.length > 0) {
+          renderAppointments(data.appointments);
+        } else {
+          showEmptyState();
+        }
+      } catch (err) {
+        console.error("Error loading appointments:", err);
+        // Try to load from phone với authentication
+        try {
+          const response = await fetch(API + "/appointments/" + user.phone, {
+            headers: {
+              'Authorization': `Bearer ${user.token}`
+            }
+          });
+          const data = await response.json();
+
+          if (data.success && data.appointments.length > 0) {
+            renderAppointments(data.appointments);
+          } else {
+            loadFromLocalStorage();
+          }
+        } catch (err2) {
+          loadFromLocalStorage();
+        }
+      }
+    }
+
+    // Render lịch khám
+    function renderAppointments(appointments) {
+      const list = document.getElementById("appointmentsList");
+      list.innerHTML = "";
+
+      const now = new Date();
+
+      appointments.forEach(apt => {
+        const aptDateTime = new Date(`${apt.appointment_date}T${apt.appointment_time}`);
+        const isPast = aptDateTime < now;
+
+        const card = document.createElement("div");
+        card.className = "appointment-card" + (isPast ? " past" : "");
+        card.innerHTML = `
+          <div class="appointment-header">
+            <div class="doctor-info">
+              <h3>${apt.doctor_name || "Bác sĩ"}</h3>
+              <div class="specialty">${apt.specialty_name || "Chuyên khoa"}</div>
+            </div>
+            <span class="appointment-status ${isPast ? "status-past" : "status-upcoming"}">
+              ${apt.status === 'completed' ? 'Đã khám' : apt.status === 'cancelled' ? 'Đã hủy' : 'Sắp khám'}
+            </span>
+          </div>
+
+          <div class="appointment-details">
+            <div class="detail-row">
+              <i class="fas fa-calendar"></i>
+              <span class="detail-label">Ngày:</span>
+              <span class="detail-value">${new Date(apt.appointment_date).toLocaleDateString('vi-VN')}</span>
+            </div>
+            <div class="detail-row">
+              <i class="fas fa-clock"></i>
+              <span class="detail-label">Giờ:</span>
+              <span class="detail-value">${apt.appointment_time}</span>
+            </div>
+            <div class="detail-row">
+              <i class="fas fa-stethoscope"></i>
+              <span class="detail-label">Loại:</span>
+              <span class="detail-value">${apt.appointment_type === 'consultation' ? 'Khám bệnh' : apt.appointment_type === 'follow_up' ? 'Tái khám' : apt.appointment_type}</span>
+            </div>
+            ${apt.room_number ? `
+            <div class="detail-row">
+              <i class="fas fa-map-marker-alt"></i>
+              <span class="detail-label">Phòng:</span>
+              <span class="detail-value">${apt.room_number}</span>
+            </div>
+            ` : ''}
+          </div>
+
+          <div class="appointment-actions">
+            ${apt.status === 'scheduled' ? `
+              <button class="btn-reschedule">
+                <i class="fas fa-edit"></i> Sửa lịch
+              </button>
+              <button class="btn-cancel">
+                <i class="fas fa-trash"></i> Hủy
+              </button>
+            ` : `
+              <button class="btn-disabled" disabled>
+                <i class="fas fa-${apt.status === 'completed' ? 'check-circle' : 'times-circle'}"></i>
+                ${apt.status === 'completed' ? 'Đã hoàn thành' : apt.status === 'cancelled' ? 'Đã hủy' : 'Trạng thái khác'}
+              </button>
+            `}
+          </div>
+        `;
+        // attach listeners to buttons created dynamically
+        if (apt.status === 'scheduled') {
+          const resBtn = card.querySelector('.btn-reschedule');
+          const cancBtn = card.querySelector('.btn-cancel');
+          if (resBtn) {
+            resBtn.addEventListener('click', () => rescheduleAppointment(apt.id, apt.appointment_date, apt.appointment_time));
+          }
+          if (cancBtn) {
+            cancBtn.addEventListener('click', () => cancelAppointment(apt.id));
+          }
+        }
+        list.appendChild(card);
+      });
+    }
+
+    // Load từ localStorage (khi backend không chạy)
+    function loadFromLocalStorage() {
+      const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+      
+      if (appointments.length > 0) {
+        // Filter cho số điện thoại hiện tại
+        const userAppointments = appointments.filter(a => a.phone === user.phone);
+        
+        if (userAppointments.length > 0) {
+          renderAppointments(userAppointments.map(a => ({
+            id: Date.now(),
+            date: a.date,
+            time: a.time,
+            phone: a.phone,
+            doctor_name: a.doctor_name,
+            specialty: 'Chuyên khoa'
+          })));
+        } else {
+          showEmptyState();
+        }
+      } else {
+        showEmptyState();
+      }
+    }
+
+    // Hiển thị trạng thái trống
+    function showEmptyState() {
+      document.getElementById("appointmentsList").style.display = "none";
+      document.getElementById("emptyState").style.display = "block";
+    }
+
+    // Hủy lịch khám
+    async function cancelAppointment(id) {
+      if (!confirm("Bạn có chắc chắn muốn hủy lịch khám này?")) {
+        return;
+      }
+
+      try {
+        const response = await fetch(API + "/api/appointments/" + id + "/status", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+          },
+          body: JSON.stringify({ status: "cancelled" })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert("✅ Đã hủy lịch khám thành công!");
+          loadAppointments();
+        } else {
+          alert("❌ Lỗi: " + (data.message || "Không thể hủy lịch khám"));
+        }
+      } catch (error) {
+        console.error("Error canceling appointment:", error);
+        alert("❌ Lỗi kết nối mạng!");
+      }
+    }
+
+    // Sửa lịch khám
+    async function rescheduleAppointment(id, currentDate, currentTime) {
+      const newDate = prompt("Nhập ngày mới (YYYY-MM-DD):", currentDate);
+      if (!newDate) return;
+
+      const newTime = prompt("Nhập giờ mới (HH:MM):", currentTime);
+      if (!newTime) return;
+
+      try {
+        const response = await fetch(API + "/api/appointments/" + id + "/reschedule", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+          },
+          body: JSON.stringify({
+            appointment_date: newDate,
+            appointment_time: newTime
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert("✅ Đã dời lịch khám thành công!");
+          loadAppointments();
+        } else {
+          alert("❌ Lỗi: " + (data.message || "Không thể dời lịch khám"));
+        }
+      } catch (error) {
+        console.error("Error rescheduling appointment:", error);
+        alert("❌ Lỗi kết nối mạng!");
+      }
+    }
+
+    // Load khi trang load
+    window.addEventListener("DOMContentLoaded", loadAppointments);
+  </script>
+</body>
+</html>

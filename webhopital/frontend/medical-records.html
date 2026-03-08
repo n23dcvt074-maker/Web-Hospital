@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ bệnh án - WebHopital</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --primary-light: #e3f2fd;
+            --success: #66bb6a;
+            --warning: #ffa726;
+            --danger: #ef5350;
+            --info: #26a69a;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg: #f5f7fa;
+            --border: #e8eaed;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .medical-records-section {
+            margin-top: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group label {
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .records-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .record-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--info));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .record-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .record-card:hover::before {
+            opacity: 1;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .record-patient h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .record-patient p {
+            margin: 0.3rem 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .record-patient i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .record-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .record-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .record-item {
+            pad: 1rem;
+            background: var(--primary-light);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .record-item h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .record-item p {
+            margin: 0;
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .record-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: var(--primary);
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--bg);
+            border-radius: 0 0 16px 16px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            background: var(--border);
+            color: var(--text);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            .record-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .record-content {
+                grid-template-columns: 1fr;
+            }
+
+            .record-actions {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                justify-content: center;
+            }
+
+            .modal-content {
+                margin: 20% auto;
+                width: 95%;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-hospital"></i>
+                <span>WebHopital</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Trang chủ</a>
+                <a href="doctors.html" class="nav-link">Bác sĩ</a>
+                <a href="about.html" class="nav-link">Giới thiệu</a>
+                <div class="nav-auth">
+                    <button class="btn-login" id="userMenuBtn">
+                        <i class="fas fa-user-circle"></i> Tài khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-file-medical"></i> Hồ sơ bệnh án</h1>
+            <p>Quản lý hồ sơ bệnh án bệnh nhân</p>
+        </div>
+
+        <div class="medical-records-section">
+            <div class="section-header">
+                <h2>Danh sách hồ sơ bệnh án</h2>
+                <button class="btn-primary" id="addRecordBtn">
+                    <i class="fas fa-plus"></i> Thêm hồ sơ mới
+                </button>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label>Tìm kiếm bệnh nhân:</label>
+                    <input type="text" id="search-input" placeholder="Tên, email...">
+                </div>
+                <div class="filter-group">
+                    <label>Loại bệnh:</label>
+                    <select id="condition-filter">
+                        <option value="all">Tất cả</option>
+                        <option value="tim-mach">Tim mạch</option>
+                        <option value="tieu-hoa">Tiêu hóa</option>
+                        <option value="ho-hap">Hô hấp</option>
+                        <option value="khac">Khác</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="records-list" class="records-list">
+                <!-- Records will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Record Modal -->
+    <div id="record-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm hồ sơ bệnh án mới</h3>
+                <span class="modal-close" id="modalCloseBtn">&times;</span>
+            </div>
+            <form id="record-form" class="modal-body">
+                <div class="form-group">
+                    <label for="patient-select">Chọn bệnh nhân *</label>
+                    <select id="patient-select" name="patient_id" required>
+                        <option value="">-- Chọn bệnh nhân --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="condition">Chẩn đoán *</label>
+                    <input type="text" id="condition" name="condition" required>
+                </div>
+                <div class="form-group">
+                    <label for="symptoms">Triệu chứng</label>
+                    <textarea id="symptoms" name="symptoms" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="examination">Kết quả khám</label>
+                    <textarea id="examination" name="examination" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="treatment">Điều trị</label>
+                    <textarea id="treatment" name="treatment" rows="4"></textarea>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="modalCancelBtn">Hủy</button>
+                <button type="button" class="btn-primary" id="modalSaveBtn">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        let medicalRecords = [];
+        let patients = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavbarAuth();
+            loadPatients();
+            loadMedicalRecords();
+            const userBtn = document.getElementById('userMenuBtn');
+            if (userBtn) userBtn.addEventListener('click', showUserMenu);
+            const addBtn = document.getElementById('addRecordBtn');
+            if (addBtn) addBtn.addEventListener('click', showAddRecordModal);
+            document.getElementById('search-input').addEventListener('keyup', filterRecords);
+            document.getElementById('condition-filter').addEventListener('change', filterRecords);
+            const modalClose = document.getElementById('modalCloseBtn'); if (modalClose) modalClose.addEventListener('click', closeModal);
+            const modalCancel = document.getElementById('modalCancelBtn'); if (modalCancel) modalCancel.addEventListener('click', closeModal);
+            const modalSave = document.getElementById('modalSaveBtn'); if (modalSave) modalSave.addEventListener('click', saveRecord);
+        });
+
+        async function loadPatients() {
+            try {
+                const user = getUser();
+                if (!user || user.role !== 'doctor') {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Load từ backend hoặc công khai danh sách bệnh nhân
+                // Tạm thời hiển thị trống
+                console.log('Patients loaded');
+            } catch (error) {
+                console.error('Error loading patients:', error);
+            }
+        }
+
+        async function loadMedicalRecords() {
+            try {
+                const user = getUser();
+                // Tạm thời hiển thị danh sách rỗng
+                displayRecords([]);
+            } catch (error) {
+                console.error('Error loading records:', error);
+                showError('Lỗi kết nối mạng');
+            }
+        }
+
+        function displayRecords(recordsList) {
+            const container = document.getElementById('records-list');
+            container.innerHTML = '';
+
+            if (recordsList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-medical"></i>
+                        <h3>Chưa có hồ sơ bệnh án</h3>
+                        <p>Hãy thêm hồ sơ bệnh án đầu tiên</p>
+                    </div>
+                `;
+                return;
+            }
+
+            recordsList.forEach(record => {
+                const recordCard = document.createElement('div');
+                recordCard.className = 'record-card';
+                recordCard.innerHTML = `
+                    <div class="record-header">
+                        <h4>${record.patient_name}</h4>
+                        <span class="record-date">${new Date(record.created_at).toLocaleDateString('vi-VN')}</span>
+                    </div>
+                    <div class="record-content">
+                        <div><strong>Chẩn đoán:</strong> ${record.condition}</div>
+                        <div><strong>Triệu chứng:</strong> ${record.symptoms || 'N/A'}</div>
+                    </div>
+                `;
+                container.appendChild(recordCard);
+            });
+        }
+
+        function filterRecords() {
+            // Implement filter logic
+        }
+
+        function showAddRecordModal() {
+            document.getElementById('record-form').reset();
+            document.getElementById('record-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('record-modal').style.display = 'none';
+        }
+
+        function saveRecord() {
+            // Implement save logic
+            showSuccess('Hồ sơ bệnh án đã được lưu');
+            closeModal();
+            loadMedicalRecords();
+        }
+
+        function showError(message) {
+            alert('Lỗi: ' + message);
+        }
+
+        function showSuccess(message) {
+            alert('Thành công: ' + message);
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('record-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+    <style>
+        .medical-records-section {
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .records-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #0066cc;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .record-header h4 {
+            margin: 0;
+            color: #333;
+        }
+
+        .record-date {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .record-content {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .record-content div {
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .modal-close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+    </style>
+</body>
+</html>
