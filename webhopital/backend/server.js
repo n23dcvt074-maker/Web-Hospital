@@ -1,5 +1,5 @@
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const db = require("./db");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -57,7 +57,6 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-const db = new sqlite3.Database("./database.db");
 const JWT_SECRET = process.env.JWT_SECRET || "d91a71eb841e2ad5788351dec6e41f8f0be3adad3d62e4acb3597bf157253c53";
 
 // Rate limiting - DISABLED
@@ -74,32 +73,34 @@ const JWT_SECRET = process.env.JWT_SECRET || "d91a71eb841e2ad5788351dec6e41f8f0b
 //   message: 'Too many login attempts, please try again later.'
 // });
 
-// CREATE TABLES - Schema mới toàn diện
+// CREATE TABLES - Schema initialization
+// NOTE: For production (Vercel), run: npm run init-db locally, then deploy
 
-// Đọc và thực thi schema.sql
-const schemaPath = path.join(__dirname, 'schema.sql');
-if (fs.existsSync(schemaPath)) {
-  const schemaSQL = fs.readFileSync(schemaPath, 'utf8');
-  db.exec(schemaSQL, (err) => {
-    if (err) {
-      console.error('Error creating tables:', err);
-    } else {
-      console.log('Database schema initialized successfully');
-    }
-  });
-}
+if (process.env.NODE_ENV !== 'production') {
+  const schemaPath = path.join(__dirname, 'schema.sql');
+  if (fs.existsSync(schemaPath)) {
+    const schemaSQL = fs.readFileSync(schemaPath, 'utf8');
+    db.exec(schemaSQL, (err) => {
+      if (err) {
+        console.error('Error creating tables:', err);
+      } else {
+        console.log('Database schema initialized successfully');
+      }
+    });
+  }
 
-// Seed data nếu cần
-const seedPath = path.join(__dirname, 'seed.sql');
-if (fs.existsSync(seedPath)) {
-  const seedSQL = fs.readFileSync(seedPath, 'utf8');
-  db.exec(seedSQL, (err) => {
-    if (err) {
-      console.error('Error seeding data:', err);
-    } else {
-      console.log('Sample data seeded successfully');
-    }
-  });
+  // Seed data nếu cần (chỉ dev)
+  const seedPath = path.join(__dirname, 'seed.sql');
+  if (fs.existsSync(seedPath)) {
+    const seedSQL = fs.readFileSync(seedPath, 'utf8');
+    db.exec(seedSQL, (err) => {
+      if (err) {
+        console.error('Error seeding data:', err);
+      } else {
+        console.log('Sample data seeded successfully');
+      }
+    });
+  }
 }
 
 // API: GET DOCTORS (cập nhật để lấy thông tin đầy đủ từ doctors và users)

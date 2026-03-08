@@ -1,6 +1,6 @@
 // Helper functions for authentication
 
-const API = 'http://localhost:3003';
+const API = 'https://web-hospital-backend.vercel.app';
 
 // Lưu token và user info
 function setAuthToken(token, user) {

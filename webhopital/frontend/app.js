@@ -1,5 +1,5 @@
 if (typeof API === 'undefined') {
-  window.API = 'http://localhost:3003';
+  window.API = 'https://web-hospital-backend.vercel.app';
 }
 
 // Dữ liệu bác sĩ mặc định (demo)
